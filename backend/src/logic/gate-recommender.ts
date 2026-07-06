@@ -26,11 +26,13 @@ export function recommendGate(fanContext: FanContext, stadiumData: StadiumData):
 
   // 2. Evaluate candidates for congestion and urgency
   let bestGate: Gate | null = null;
-  const scoreMap: Record<string, number> = { 'low': 1, 'medium': 2, 'high': 3 };
+  const levelOrder: Record<string, number> = { 'low': 1, 'medium': 2, 'high': 3 };
 
-  let lowestScore = Infinity;
-  let finalUrgency = 'low';
+  let bestLevel = Infinity;
+  let bestUrgencyRank = Infinity;
+  let finalUrgency: 'low' | 'medium' | 'high' = 'low';
   let bestTrace: string[] = [];
+  let selectionReason = '';
 
   for (const gate of candidateGates) {
     const congestionResult = predictCongestionTrend(
@@ -46,26 +48,44 @@ export function recommendGate(fanContext: FanContext, stadiumData: StadiumData):
       congestionResult.trendDirection
     );
 
-    const score = scoreMap[congestionResult.predictedLevel] + scoreMap[urgencyResult.urgency];
+    const levelRank = levelOrder[congestionResult.predictedLevel];
+    const urgencyRank = levelOrder[urgencyResult.urgency];
 
-    // We pick the gate with the lowest combined severity score
-    if (score < lowestScore) {
-      lowestScore = score;
+    let shouldReplace = false;
+    let reason = '';
+
+    if (!bestGate) {
+      shouldReplace = true;
+      reason = `Gate ${gate.id} selected: first available candidate.`;
+    } else if (levelRank < bestLevel) {
+      shouldReplace = true;
+      reason = `Gate ${gate.id} selected over Gate ${bestGate.id}: lowest predicted congestion.`;
+    } else if (levelRank === bestLevel) {
+      if (urgencyRank < bestUrgencyRank) {
+        shouldReplace = true;
+        reason = `Gate ${gate.id} selected over Gate ${bestGate.id}: equal congestion, lower urgency.`;
+      }
+    }
+
+    if (shouldReplace) {
       bestGate = gate;
+      bestLevel = levelRank;
+      bestUrgencyRank = urgencyRank;
       finalUrgency = urgencyResult.urgency;
       bestTrace = [congestionResult.trace, urgencyResult.trace];
+      selectionReason = reason;
     }
   }
 
   reasoningTrail = reasoningTrail.concat(bestTrace);
-  reasoningTrail.push(`Selected Gate ${bestGate!.id} as the optimal route.`);
+  reasoningTrail.push(selectionReason);
 
   return {
     answer: `Head to Gate ${bestGate!.id}.`,
     recommended_gate: bestGate!.id,
     route_steps: [`Proceed towards Gate ${bestGate!.id}`],
     accessibility_notes: fanContext.accessibility_needs,
-    urgency_level: finalUrgency as any,
+    urgency_level: finalUrgency,
     reasoning_trail: reasoningTrail
   };
 }
