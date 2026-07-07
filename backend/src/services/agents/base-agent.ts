@@ -27,22 +27,26 @@ export async function safeGenerate<T>(
   options?: SafeGenerateOptions
 ): Promise<T> {
   const executeCall = async (): Promise<T> => {
-    // 8-second timeout wrapper using AbortController
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    let timeoutId: NodeJS.Timeout;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      timeoutId = setTimeout(() => reject(new Error('TIMEOUT')), 8000);
+    });
 
     try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-        config: {
-          systemInstruction: options?.systemInstruction,
-          responseMimeType: 'application/json',
-          responseSchema: options?.responseSchema,
-        }
-      });
+      const config: any = { responseMimeType: 'application/json' };
+      if (options?.systemInstruction) config.systemInstruction = options.systemInstruction;
+      if (options?.responseSchema) config.responseSchema = options.responseSchema;
 
-      clearTimeout(timeout);
+      const response = await Promise.race([
+        ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+          config
+        }),
+        timeoutPromise
+      ]);
+
+      clearTimeout(timeoutId!);
 
       const text = response.text || '';
       
@@ -55,11 +59,7 @@ export async function safeGenerate<T>(
 
       return JSON.parse(cleanText) as T;
     } catch (error: any) {
-      clearTimeout(timeout);
-      
-      if (error.name === 'AbortError') {
-        throw new Error("Gemini API call timed out after 8 seconds");
-      }
+      clearTimeout(timeoutId!);
       throw error;
     }
   };
@@ -68,7 +68,7 @@ export async function safeGenerate<T>(
     return await executeCall();
   } catch (error: any) {
     // Retry once for transient errors (timeout or 5xx)
-    const isTransient = error.name === 'AbortError' || (error.status && error.status >= 500);
+    const isTransient = error.message === 'TIMEOUT' || (error.status && error.status >= 500);
     
     if (isTransient) {
       console.warn("[Agent Warn] Transient error in LLM call, retrying once...");

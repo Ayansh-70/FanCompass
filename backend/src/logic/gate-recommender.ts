@@ -48,8 +48,8 @@ export function recommendGate(fanContext: FanContext, stadiumData: StadiumData):
       congestionResult.trendDirection
     );
 
-    const levelRank = levelOrder[congestionResult.predictedLevel];
-    const urgencyRank = levelOrder[urgencyResult.urgency];
+    const levelRank = levelOrder[congestionResult.predictedLevel] || 4;
+    const urgencyRank = levelOrder[urgencyResult.urgency] || 4;
 
     let shouldReplace = false;
     let reason = '';
