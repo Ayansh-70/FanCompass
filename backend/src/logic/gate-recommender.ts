@@ -61,6 +61,9 @@ export function recommendGate(fanContext: FanContext, stadiumData: StadiumData):
       shouldReplace = true;
       reason = `Gate ${gate.id} selected over Gate ${bestGate.id}: lowest predicted congestion.`;
     } else if (levelRank === bestLevel) {
+      // Note: Intentionally kept as a tiebreaker for future-proofing. 
+      // Currently, urgency is identical if predictedLevel is identical given a shared minutes_to_kickoff, 
+      // but this rule will activate if urgency logic ever incorporates a per-gate factor.
       if (urgencyRank < bestUrgencyRank) {
         shouldReplace = true;
         reason = `Gate ${gate.id} selected over Gate ${bestGate.id}: equal congestion, lower urgency.`;
