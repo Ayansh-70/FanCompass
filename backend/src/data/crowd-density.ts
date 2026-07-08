@@ -25,7 +25,7 @@ export function generateLiveCrowdLevels(gateIds: string[], seed?: number): Recor
   gateIds.forEach(id => {
     // Generate a deterministic random value between 0 and 2
     const randValue = Math.floor(random() * 3);
-    crowdData[id] = levels[randValue];
+    crowdData[id] = levels[randValue] || 'low';
   });
   
   return crowdData;
