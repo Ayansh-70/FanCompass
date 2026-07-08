@@ -1,6 +1,10 @@
 process.env.GEMINI_API_KEY = 'test-key';
 const mockGenerateContent = jest.fn();
 
+jest.mock('dotenv', () => ({
+  config: jest.fn()
+}));
+
 jest.mock('@google/genai', () => {
   return {
     GoogleGenAI: jest.fn().mockImplementation(() => {
@@ -64,5 +68,18 @@ describe('base-agent timeout logic', () => {
     const result = await safeGenerate('test prompt', fallback);
 
     expect(result).toEqual(fallback);
+  });
+
+  it('should throw immediately at import time if GEMINI_API_KEY is missing', () => {
+    jest.isolateModules(() => {
+      const originalKey = process.env.GEMINI_API_KEY;
+      delete process.env.GEMINI_API_KEY;
+      
+      expect(() => {
+        require('../../../src/services/agents/base-agent');
+      }).toThrow('GEMINI_API_KEY is missing from environment variables. Failing fast.');
+      
+      process.env.GEMINI_API_KEY = originalKey;
+    });
   });
 });
