@@ -1,6 +1,11 @@
 import request from 'supertest';
 import app from '../../src/server';
 
+jest.mock('../../src/services/agents/orchestrator', () => ({
+  orchestrateFanQuery: jest.fn(),
+  orchestrateStaffQuery: jest.fn()
+}));
+
 describe('Stadium Routes', () => {
   it('should return 200 with the exact StadiumData shape on GET /api/stadium/gates', async () => {
     const res = await request(app).get('/api/stadium/gates');
