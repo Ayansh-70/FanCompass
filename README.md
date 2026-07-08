@@ -8,6 +8,10 @@ FanCompass is a GenAI-powered multilingual accessibility assistant for FIFA Worl
 - **backend/**: Node.js + Express + TypeScript
 - **docs/**: Architectural documentation
 
+## Design Choices
+
+- **Decoupled Logic**: Both frontend and backend logic layers remain strictly decoupled from their frameworks. For example, the frontend's `useKickoffTimer.ts` utilizes no React lifecycle hooks (`useState`/`useEffect`). It operates as a thin wrapper around a pure deterministic calculation, ensuring it remains fully isolated, testable, and framework-agnostic.
+
 ## Getting Started
 
 1. Set up the backend environment:

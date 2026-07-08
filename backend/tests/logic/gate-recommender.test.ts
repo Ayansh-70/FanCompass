@@ -98,4 +98,24 @@ describe('gate-recommender', () => {
     expect(result.recommended_gate).toBe('A');
     expect(result.reasoning_trail.join(' ')).toContain('Gate A selected: first available candidate');
   });
+
+  it('should handle the scenario where all gates have high congestion', () => {
+    const stadiumData: StadiumData = {
+      gates: [
+        { ...baseGate, id: 'A', current_crowd_level: 'high' },
+        { ...baseGate, id: 'B', current_crowd_level: 'high' }
+      ]
+    };
+    const context: FanContext = {
+      language: 'en',
+      seat_section: '101',
+      minutes_to_kickoff: 30,
+      accessibility_needs: []
+    };
+
+    const result = recommendGate(context, stadiumData);
+    // Since both are high, it falls back to the array order tiebreaker
+    expect(result.recommended_gate).toBe('A');
+    expect(result.reasoning_trail.join(' ')).toContain('Gate A selected');
+  });
 });

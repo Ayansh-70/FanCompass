@@ -53,4 +53,15 @@ describe('base-agent timeout logic', () => {
     // It should have tried exactly twice (initial + 1 retry)
     expect(mockGenerateContent).toHaveBeenCalledTimes(2);
   });
+
+  it('should return fallback when Gemini returns invalid JSON', async () => {
+    mockGenerateContent.mockResolvedValueOnce({
+      text: 'This is not valid JSON'
+    });
+
+    const fallback = { status: 'fallback' };
+    const result = await safeGenerate('test prompt', fallback);
+
+    expect(result).toEqual(fallback);
+  });
 });

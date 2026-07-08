@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install Root Dependencies
+      run: npm ci
+
+    - name: Install Backend Dependencies
+      run: npm ci
+      working-directory: ./backend
+
+    - name: Install Frontend Dependencies
+      run: npm ci
+      working-directory: ./frontend
+
+    - name: Run Backend Tests
+      run: npm run test
+      working-directory: ./backend
+
+    - name: Run Frontend Tests
+      run: npm run test
+      working-directory: ./frontend
+
+    - name: Type-check Backend
+      run: npx tsc --noEmit
+      working-directory: ./backend
+
+    - name: Type-check Frontend
+      run: npx tsc -b
+      working-directory: ./frontend

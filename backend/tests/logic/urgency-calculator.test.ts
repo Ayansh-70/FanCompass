@@ -30,4 +30,14 @@ describe('urgency-calculator', () => {
     expect(urgency).toBe('low');
     expect(trace).toContain('not high');
   });
+
+  it('should correctly handle zero minutes to kickoff', () => {
+    const { urgency } = calculateUrgency(0, 'low', 'rising');
+    expect(urgency).toBe('high');
+  });
+
+  it('should correctly handle negative minutes to kickoff (game started)', () => {
+    const { urgency } = calculateUrgency(-5, 'high', 'stable');
+    expect(urgency).toBe('high');
+  });
 });
