@@ -18,7 +18,7 @@ app.use(helmet());
 // 2. CORS restrictions
 // Restrict cross-origin requests to only the frontend Vite origin, blocking unauthorized web clients.
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173'
 }));
 
 // 3. Rate Limiter
