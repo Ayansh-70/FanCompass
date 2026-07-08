@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useFanContext } from '../hooks/useFanContext';
 import '../styles/VoiceControls.css';
 
@@ -75,7 +75,8 @@ export function VoiceInput({ onTranscript, isListening, setIsListening }: VoiceI
       className={`mic-btn ${isListening ? 'listening' : ''}`}
       onClick={toggleListen}
       title="Voice Input"
-      aria-label="Voice Input"
+      aria-label="Toggle voice input"
+      aria-pressed={isListening}
     >
       {isListening ? '🛑' : '🎤'}
     </button>
@@ -101,14 +102,15 @@ export function VoiceOutputToggle({ readAloud, setReadAloud }: VoiceOutputToggle
   }
 
   return (
-    <label className="voice-toggle">
-      <input 
-        type="checkbox" 
-        checked={readAloud} 
-        onChange={(e) => setReadAloud(e.target.checked)} 
-      />
-      <span>🔊 Read Aloud</span>
-    </label>
+    <button 
+      type="button"
+      className={`voice-toggle-btn ${readAloud ? 'active' : ''}`}
+      onClick={() => setReadAloud(!readAloud)}
+      aria-pressed={readAloud}
+      aria-label="Toggle Read Aloud"
+    >
+      <span className="voice-icon">🔊</span> Read Aloud
+    </button>
   );
 }
 

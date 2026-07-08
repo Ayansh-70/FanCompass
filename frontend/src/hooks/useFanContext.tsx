@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 
 export type Bcp47Locale = 'en-US' | 'es-ES' | 'fr-FR' | 'de-DE' | 'ar-SA' | 'zh-CN';
 

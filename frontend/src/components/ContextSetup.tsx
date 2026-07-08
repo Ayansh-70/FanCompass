@@ -1,4 +1,5 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useFanContext, LOCALE_MAP } from '../hooks/useFanContext';
 import { ACCESSIBILITY_NEEDS } from '../constants/accessibility';
 import '../styles/ContextSetup.css';
@@ -17,6 +18,8 @@ export function ContextSetup() {
     return d.toISOString().slice(0, 16);
   });
   
+  const [errorMsg, setErrorMsg] = useState('');
+
   const [accessibility, setAccessibility] = useState<Record<string, boolean>>({
     'wheelchair': false,
     'low_vision': false,
@@ -30,9 +33,10 @@ export function ContextSetup() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!seatSection.trim()) {
-      alert("Please enter a seat section");
+      setErrorMsg("Please enter a seat section.");
       return;
     }
+    setErrorMsg('');
 
     const needs = Object.entries(accessibility)
       .filter(([_, checked]) => checked)
@@ -54,6 +58,12 @@ export function ContextSetup() {
       <div className="setup-card glass-card">
         <h2>Fan Setup</h2>
         <p>Help us personalize your stadium experience.</p>
+        
+        {errorMsg && (
+          <div role="alert" aria-live="assertive" className="form-error">
+            {errorMsg}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="setup-form">
           <div className="form-group">
@@ -91,21 +101,24 @@ export function ContextSetup() {
             />
           </div>
 
-          <div className="form-group">
-            <label>Accessibility Needs</label>
+          <fieldset className="form-group borderless-fieldset">
+            <legend>Accessibility Needs</legend>
             <div className="checkbox-grid">
               {ACCESSIBILITY_NEEDS.map(need => (
-                <label key={need.value} className="checkbox-label">
+                <div key={need.value} className="checkbox-wrapper">
                   <input 
+                    id={`acc-${need.value}`}
                     type="checkbox" 
                     checked={accessibility[need.value]} 
                     onChange={() => handleToggle(need.value)} 
                   />
-                  <span>{need.label}</span>
-                </label>
+                  <label htmlFor={`acc-${need.value}`} className="checkbox-label">
+                    <span>{need.label}</span>
+                  </label>
+                </div>
               ))}
             </div>
-          </div>
+          </fieldset>
 
           <button type="submit" className="primary-btn">Start Chat</button>
         </form>

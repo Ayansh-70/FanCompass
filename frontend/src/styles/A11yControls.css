@@ -1,0 +1,56 @@
+.a11y-controls-bar {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.a11y-inner {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.a11y-toggle-btn, .a11y-font-btn {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.a11y-toggle-btn:hover, .a11y-font-btn:hover:not(:disabled) {
+  background: var(--bg-alt);
+  border-color: var(--text-muted);
+}
+
+.a11y-toggle-btn.active {
+  background: var(--text-primary);
+  color: var(--bg-color);
+  border-color: var(--text-primary);
+}
+
+.font-scaling-group {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.a11y-font-btn {
+  padding: 0.4rem 0.6rem;
+}
+
+.a11y-font-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

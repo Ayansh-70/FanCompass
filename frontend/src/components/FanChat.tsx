@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, FormEvent } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import type { FormEvent } from 'react';
 import { useFanContext } from '../hooks/useFanContext';
-import { AssistantResponse } from '../types/assistant-response';
+import type { AssistantResponse } from '../types/assistant-response';
 import { VoiceInput, VoiceOutputToggle, speakText } from './VoiceControls';
 import '../styles/FanChat.css';
 
@@ -18,7 +19,15 @@ export function FanChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [readAloud, setReadAloud] = useState(false);
+  const [liveAnnouncement, setLiveAnnouncement] = useState('');
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  // Focus heading on mount
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -66,6 +75,12 @@ export function FanChat() {
       
       const assistantMsg: Message = { id: Date.now().toString(), sender: 'assistant', data };
       setMessages(prev => [...prev, assistantMsg]);
+      
+      // Update the visually hidden aria-live region with a clean, synthesized string
+      const accNotes = data.accessibility_notes.length > 0 
+        ? `Accessibility notes: ${data.accessibility_notes.join(', ')}.` 
+        : '';
+      setLiveAnnouncement(`Assistant says: ${data.answer}. Recommended Gate is ${data.recommended_gate}. Urgency is ${data.urgency_level}. ${accNotes}`);
 
       if (readAloud && fanState?.bcp47Locale) {
         speakText(data.answer, fanState.bcp47Locale);
@@ -93,9 +108,14 @@ export function FanChat() {
 
   return (
     <div className="chat-container">
+      {/* Visually hidden aria-live region for screen readers */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {liveAnnouncement}
+      </div>
+
       <div className="chat-header glass-card">
         <div>
-          <h2>Stadium Assistant</h2>
+          <h2 tabIndex={-1} ref={headingRef} className="chat-heading">Stadium Assistant</h2>
           <div className="context-badges">
             <span className="badge">Sec {fanState?.seat_section}</span>
             <span className="badge">Kickoff: {getLiveMinutesToKickoff()}m</span>

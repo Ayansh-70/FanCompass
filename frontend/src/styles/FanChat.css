@@ -23,6 +23,10 @@
   color: var(--text-primary);
 }
 
+.chat-heading:focus {
+  outline: none; /* tabIndex=-1 prevents keyboard focus, we only programmatic focus it */
+}
+
 .context-badges {
   display: flex;
   gap: 0.5rem;

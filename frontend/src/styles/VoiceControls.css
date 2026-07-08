@@ -31,7 +31,7 @@
   100% { box-shadow: 0 0 0 0 rgba(255, 75, 75, 0); }
 }
 
-.voice-toggle {
+.voice-toggle-btn {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -39,11 +39,22 @@
   color: var(--text-secondary);
   cursor: pointer;
   user-select: none;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.3rem 0.6rem;
+  font-family: inherit;
+  transition: all 0.2s;
 }
 
-.voice-toggle input {
-  cursor: pointer;
-  accent-color: var(--accent-color);
+.voice-toggle-btn:hover {
+  background: var(--bg-alt);
+}
+
+.voice-toggle-btn.active {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
 }
 
 .voice-unsupported-note {

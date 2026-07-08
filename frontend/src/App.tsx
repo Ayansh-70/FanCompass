@@ -1,6 +1,7 @@
 import { FanProvider, useFanContext } from './hooks/useFanContext';
 import { ContextSetup } from './components/ContextSetup';
 import { FanChat } from './components/FanChat';
+import { A11yControls } from './components/A11yControls';
 import './index.css';
 
 function AppContent() {
@@ -18,6 +19,7 @@ function AppContent() {
 function App() {
   return (
     <FanProvider>
+      <A11yControls />
       <AppContent />
     </FanProvider>
   );

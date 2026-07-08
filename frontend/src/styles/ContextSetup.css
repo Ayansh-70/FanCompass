@@ -24,8 +24,18 @@
 
 .setup-card p {
   color: var(--text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-size: 0.95rem;
+}
+
+.form-error {
+  color: #ff4b4b;
+  background: rgba(255, 75, 75, 0.1);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 75, 75, 0.3);
 }
 
 .setup-form {
@@ -74,20 +84,24 @@
   gap: 0.5rem;
 }
 
-.checkbox-label {
+.checkbox-wrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: var(--text-primary);
 }
 
-.checkbox-label input {
+.checkbox-wrapper input {
   width: 18px;
   height: 18px;
   cursor: pointer;
   accent-color: var(--accent-color);
+}
+
+.checkbox-label {
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  display: inline-block;
 }
 
 .primary-btn {
@@ -106,4 +120,19 @@
 .primary-btn:hover {
   background: var(--accent-hover);
   transform: translateY(-2px);
+}
+
+.borderless-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.borderless-fieldset legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
 }

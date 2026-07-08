@@ -28,6 +28,51 @@ body {
 }
 
 /* Utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High Contrast Overrides */
+.high-contrast {
+  --bg-color: #000000;
+  --bg-primary: #000000;
+  --bg-alt: #000000;
+  --text-primary: #ffffff;
+  --text-secondary: #ffff00;
+  --text-muted: #ffffff;
+  --accent-color: #ffff00;
+  --accent-hover: #ffff00;
+  --border-color: #ffffff;
+  --input-bg: #000000;
+}
+
+.high-contrast .glass-card {
+  background: #000000;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 2px solid #ffffff;
+}
+
+.high-contrast .badge.access {
+  background: #000000;
+  color: #ffff00;
+  border: 1px solid #ffff00;
+}
+
+/* Keyboard Focus */
+*:focus-visible {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .glass-card {
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(12px);
