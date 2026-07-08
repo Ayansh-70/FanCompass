@@ -1,3 +1,4 @@
+process.env.GEMINI_API_KEY = 'test-key';
 const mockGenerateContent = jest.fn();
 
 jest.mock('@google/genai', () => {

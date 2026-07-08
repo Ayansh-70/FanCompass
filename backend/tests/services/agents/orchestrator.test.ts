@@ -1,3 +1,4 @@
+process.env.GEMINI_API_KEY = 'test-key';
 import { orchestrateFanQuery } from '../../../src/services/agents/orchestrator';
 import { FanContext, StadiumData } from '../../../src/types/stadium';
 import * as navigationAgent from '../../../src/services/agents/navigation-agent';
