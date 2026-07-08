@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import type { FormEvent } from 'react';
 import { useFanContext } from '../hooks/useFanContext';
 import type { AssistantResponse } from '../types/assistant-response';
@@ -102,9 +102,9 @@ export function FanChat() {
     }
   };
 
-  const handleVoiceTranscript = (text: string) => {
+  const handleVoiceTranscript = useCallback((text: string) => {
     setInputVal(prev => (prev + ' ' + text).trim());
-  };
+  }, []);
 
   return (
     <div className="chat-container">

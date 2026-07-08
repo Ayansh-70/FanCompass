@@ -49,6 +49,14 @@ export function VoiceInput({ onTranscript, isListening, setIsListening }: VoiceI
     };
 
     recognitionRef.current = recognition;
+
+    return () => {
+      try {
+        recognition.abort();
+      } catch (e) {
+        // Ignore abort errors
+      }
+    };
   }, [fanState?.bcp47Locale, onTranscript, setIsListening]);
 
   if (!supported) return null;
@@ -105,7 +113,14 @@ export function VoiceOutputToggle({ readAloud, setReadAloud }: VoiceOutputToggle
     <button 
       type="button"
       className={`voice-toggle-btn ${readAloud ? 'active' : ''}`}
-      onClick={() => setReadAloud(!readAloud)}
+      onClick={() => {
+        if (!readAloud) {
+          // Prime speech engine on user interaction
+          const utterance = new SpeechSynthesisUtterance('');
+          window.speechSynthesis.speak(utterance);
+        }
+        setReadAloud(!readAloud);
+      }}
       aria-pressed={readAloud}
       aria-label="Toggle Read Aloud"
     >
