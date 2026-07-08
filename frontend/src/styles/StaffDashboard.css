@@ -1,0 +1,150 @@
+.staff-dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.staff-loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.staff-error {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  color: #ff4b4b;
+  border-color: #ff4b4b;
+  text-align: center;
+}
+
+.staff-header {
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.staff-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.staff-controls {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.gates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gate-card {
+  padding: 1.25rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gate-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.gate-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gate-info h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  min-width: 80px;
+}
+
+.crowd-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  color: white;
+}
+.crowd-badge.low { background: #10b981; }
+.crowd-badge.medium { background: #f59e0b; }
+.crowd-badge.high { background: #ef4444; }
+
+.insight-btn {
+  background: var(--bg-alt);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.insight-btn:hover:not(:disabled) {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.insight-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.insight-error {
+  background: rgba(255, 75, 75, 0.1);
+  color: #ff4b4b;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 75, 75, 0.3);
+  font-size: 0.9rem;
+}
+
+.insight-result {
+  background: var(--bg-primary);
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-color);
+}
+
+.directive {
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+}
+
+.staff-reasoning {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.staff-reasoning summary {
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+}
+.staff-reasoning ul {
+  margin: 0.5rem 0 0 1rem;
+  padding: 0;
+  color: var(--text-muted);
+}

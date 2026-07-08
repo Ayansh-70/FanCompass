@@ -6,6 +6,7 @@ import { errorHandler } from './middleware/error-handler';
 import healthRoutes from './routes/health-routes';
 import fanRoutes from './routes/fan-routes';
 import staffRoutes from './routes/staff-routes';
+import stadiumRoutes from './routes/stadium-routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +33,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use('/api', healthRoutes);
 app.use('/api', fanRoutes);
 app.use('/api', staffRoutes);
+app.use('/api', stadiumRoutes);
 
 // 6. Error Handler (Last middleware)
 // Catches any unhandled errors and hides stack traces in production.

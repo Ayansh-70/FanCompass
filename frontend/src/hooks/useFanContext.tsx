@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useKickoffTimer } from './useKickoffTimer';
 
 export type Bcp47Locale = 'en-US' | 'es-ES' | 'fr-FR' | 'de-DE' | 'ar-SA' | 'zh-CN';
 
@@ -32,11 +33,11 @@ const FanContext = createContext<FanContextValue | undefined>(undefined);
 export function FanProvider({ children }: { children: ReactNode }) {
   const [fanState, setFanState] = useState<FanState | null>(null);
 
+  const { getLiveMinutesToKickoff: calcLiveMinutes } = useKickoffTimer();
+
   const getLiveMinutesToKickoff = () => {
-    if (!fanState) return 0;
-    const now = new Date();
-    const diffMs = fanState.kickoffTime.getTime() - now.getTime();
-    return Math.floor(diffMs / 60000); // converting ms to minutes
+    if (!fanState?.kickoffTime) return 0;
+    return calcLiveMinutes(fanState.kickoffTime);
   };
 
   return (
