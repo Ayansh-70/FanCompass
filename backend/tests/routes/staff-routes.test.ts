@@ -3,7 +3,9 @@ import app from '../../src/server';
 import { orchestrateStaffQuery } from '../../src/services/agents/orchestrator';
 
 // Mock orchestrator entirely to avoid instantiating agents or hitting Gemini
-jest.mock('../../src/services/agents/orchestrator');
+jest.mock('../../src/services/agents/orchestrator', () => ({
+  orchestrateStaffQuery: jest.fn()
+}));
 
 describe('Staff Routes', () => {
   const validPayload = {
