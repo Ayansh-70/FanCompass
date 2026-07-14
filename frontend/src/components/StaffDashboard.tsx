@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useKickoffTimer } from '../hooks/useKickoffTimer';
 import type { Gate } from '../types/stadium';
+import { GlobalHeader } from './GlobalHeader';
 import '../styles/StaffDashboard.css';
 
 type StaffRole = 'volunteer' | 'organizer' | 'security';
@@ -12,7 +13,11 @@ interface InsightResult {
   liveAnnouncement: string;
 }
 
-export function StaffDashboard() {
+interface StaffDashboardProps {
+  onBack?: () => void;
+}
+
+export function StaffDashboard({ onBack }: StaffDashboardProps) {
   const { getLiveMinutesToKickoff } = useKickoffTimer();
   
   // 1. Kickoff Time State
@@ -44,13 +49,16 @@ export function StaffDashboard() {
         if (!res.ok) throw new Error('Failed to fetch stadium data');
         const data = await res.json();
         
+        // Defensive check against backend returning { gates: [...] } instead of [...]
+        const gatesArray = Array.isArray(data) ? data : (data.gates || []);
+        
         // Initialize insight state for each gate
         const initialInsights: Record<string, InsightResult> = {};
-        data.forEach((g: Gate) => {
+        gatesArray.forEach((g: Gate) => {
           initialInsights[g.id] = { isLoading: false, liveAnnouncement: '' };
         });
         
-        setGates(data);
+        setGates(gatesArray);
         setInsights(initialInsights);
       } catch (err: any) {
         setGatesError("Could not load stadium gates.");
@@ -123,10 +131,10 @@ export function StaffDashboard() {
   if (gatesError) return <div className="staff-error glass-card">⚠️ {gatesError}</div>;
 
   return (
-    <div className="staff-dashboard">
-      <header className="staff-header glass-card">
-        <h2>Operational Dashboard</h2>
-        <div className="staff-controls">
+    <>
+      <GlobalHeader onBack={onBack} title="Operational Dashboard" />
+      <div className="staff-dashboard">
+        <div className="staff-controls glass-card">
           <div className="form-group">
             <label htmlFor="staffRole">Current Role</label>
             <select id="staffRole" value={role} onChange={(e) => setRole(e.target.value as StaffRole)}>
@@ -145,13 +153,12 @@ export function StaffDashboard() {
             />
           </div>
         </div>
-      </header>
 
       <div className="gates-list">
         {gates.map(gate => {
           const insight = insights[gate.id];
           return (
-            <div key={gate.id} className="gate-card glass-card">
+            <div key={gate.id} className={`gate-card glass-card crowd-${gate.current_crowd_level}`}>
               {/* Unconditionally rendered aria-live region per gate */}
               <div className="sr-only" aria-live="polite" aria-atomic="true">
                 {insight?.liveAnnouncement || ''}
@@ -161,11 +168,12 @@ export function StaffDashboard() {
                 <div className="gate-info">
                   <h3>Gate {gate.id}</h3>
                   <span className={`crowd-badge ${gate.current_crowd_level}`}>
+                    <span className="live-dot" aria-hidden="true"></span>
                     Crowd: {gate.current_crowd_level.toUpperCase()}
                   </span>
                 </div>
                 <button 
-                  className="insight-btn"
+                  className={`insight-btn ${insight?.isLoading ? 'loading-shimmer' : ''}`}
                   onClick={() => handleGetInsight(gate.id)}
                   disabled={insight?.isLoading}
                 >
@@ -197,5 +205,6 @@ export function StaffDashboard() {
         })}
       </div>
     </div>
+    </>
   );
 }

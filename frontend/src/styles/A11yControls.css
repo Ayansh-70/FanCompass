@@ -1,6 +1,6 @@
 .a11y-controls-bar {
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
+  background: var(--secondary);
+  border-bottom: 1px solid var(--border);
   padding: 0.5rem 1rem;
   display: flex;
   justify-content: center;
@@ -17,8 +17,8 @@
 
 .a11y-toggle-btn, .a11y-font-btn {
   background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  color: var(--foreground);
+  border: 1px solid var(--border);
   padding: 0.4rem 0.75rem;
   border-radius: 6px;
   cursor: pointer;
@@ -31,14 +31,14 @@
 }
 
 .a11y-toggle-btn:hover, .a11y-font-btn:hover:not(:disabled) {
-  background: var(--bg-alt);
-  border-color: var(--text-muted);
+  background: var(--muted);
+  border-color: var(--muted-foreground);
 }
 
 .a11y-toggle-btn.active {
-  background: var(--text-primary);
-  color: var(--bg-color);
-  border-color: var(--text-primary);
+  background: var(--foreground);
+  color: var(--background);
+  border-color: var(--foreground);
 }
 
 .font-scaling-group {

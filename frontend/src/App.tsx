@@ -1,26 +1,33 @@
+import { useState } from 'react';
 import { FanProvider, useFanContext } from './hooks/useFanContext';
 import { ContextSetup } from './components/ContextSetup';
 import { FanChat } from './components/FanChat';
 import { StaffDashboard } from './components/StaffDashboard';
 import { A11yControls } from './components/A11yControls';
+import { Landing } from './components/Landing';
 import './index.css';
 
 function AppContent() {
   const path = window.location.pathname;
 
   if (path === '/staff') {
-    return <StaffDashboard />;
+    return <StaffDashboard onBack={() => window.location.href = '/'} />;
   }
 
-  const { fanState } = useFanContext();
+  const { fanState, setFanState } = useFanContext();
+  const [hasStarted, setHasStarted] = useState(false);
+
+  if (!hasStarted) {
+    return <Landing onStart={() => setHasStarted(true)} />;
+  }
 
   // If no fanState exists, user needs to onboard
   if (!fanState) {
-    return <ContextSetup />;
+    return <ContextSetup onBack={() => setHasStarted(false)} />;
   }
 
   // Otherwise, they can chat
-  return <FanChat />;
+  return <FanChat onBack={() => setFanState(null)} />;
 }
 
 function App() {

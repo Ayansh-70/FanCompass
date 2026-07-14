@@ -1,24 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
-  --bg-color: #0f172a;
-  --bg-primary: #1e293b;
-  --bg-alt: #334155;
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --accent-color: #6366f1;
-  --accent-hover: #4f46e5;
-  --border-color: #334155;
-  --input-bg: #0f172a;
+  --background: hsl(224, 30%, 9%);
+  --foreground: hsl(210, 20%, 95%);
+  --primary: hsl(210, 100%, 56%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(222, 25%, 14%);
+  --secondary-foreground: hsl(215, 15%, 75%);
+  --muted: hsl(220, 20%, 18%);
+  --muted-foreground: hsl(215, 15%, 55%);
+  --accent: hsl(210, 100%, 56%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 72%, 51%);
+  --border: hsl(220, 15%, 22%);
+  --input: hsl(222, 25%, 14%);
+  --ring: hsl(210, 100%, 56%);
+  --radius: 0.625rem;
+  --nav-button: hsl(222, 25%, 16%);
+  --hero-bg: hsl(224, 35%, 7%);
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-primary);
+  font-family: 'Sora', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -40,42 +45,45 @@ body {
   border: 0;
 }
 
-/* High Contrast Overrides */
-.high-contrast {
-  --bg-color: #000000;
-  --bg-primary: #000000;
-  --bg-alt: #000000;
-  --text-primary: #ffffff;
-  --text-secondary: #ffff00;
-  --text-muted: #ffffff;
-  --accent-color: #ffff00;
-  --accent-hover: #ffff00;
-  --border-color: #ffffff;
-  --input-bg: #000000;
-}
-
-.high-contrast .glass-card {
-  background: #000000;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border: 2px solid #ffffff;
-}
-
-.high-contrast .badge.access {
-  background: #000000;
-  color: #ffff00;
-  border: 1px solid #ffff00;
-}
-
 /* Keyboard Focus */
 *:focus-visible {
-  outline: 3px solid var(--accent-color);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
 
 .glass-card {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--secondary) 85%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* Animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up, .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

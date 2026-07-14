@@ -3,16 +3,34 @@ import type { FormEvent } from 'react';
 import { useFanContext } from '../hooks/useFanContext';
 import type { AssistantResponse } from '../types/assistant-response';
 import { VoiceInput, VoiceOutputToggle, speakText } from './VoiceControls';
+import { GlobalHeader } from './GlobalHeader';
 import '../styles/FanChat.css';
 
 interface Message {
   id: string;
   sender: 'user' | 'assistant' | 'system';
-  text?: string; // For user/system messages
-  data?: AssistantResponse; // For assistant messages
+  text?: string;
+  data?: AssistantResponse;
 }
 
-export function FanChat() {
+const QUICK_ACTIONS = [
+  { label: '🚻 Nearest restroom', query: 'Where is the nearest restroom?' },
+  { label: '🍔 Food & drinks', query: 'Where can I get food and drinks?' },
+  { label: '♿ Accessible route', query: 'What is the accessible route to my seat?' },
+  { label: '🚗 Parking info', query: 'Where is the nearest parking area?' },
+];
+
+const URGENCY_ICONS: Record<string, string> = {
+  low: '✅',
+  medium: '⚡',
+  high: '🚨',
+};
+
+interface FanChatProps {
+  onBack?: () => void;
+}
+
+export function FanChat({ onBack }: FanChatProps) {
   const { fanState, getLiveMinutesToKickoff } = useFanContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputVal, setInputVal] = useState('');
@@ -24,7 +42,6 @@ export function FanChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  // Focus heading on mount
   useEffect(() => {
     headingRef.current?.focus();
   }, []);
@@ -37,10 +54,8 @@ export function FanChat() {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  const handleSubmit = async (e?: FormEvent) => {
-    if (e) e.preventDefault();
-    const query = inputVal.trim();
-    if (!query) return;
+  const submitQuery = async (query: string) => {
+    if (!query.trim()) return;
 
     const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: query };
     setMessages(prev => [...prev, userMsg]);
@@ -76,7 +91,6 @@ export function FanChat() {
       const assistantMsg: Message = { id: Date.now().toString(), sender: 'assistant', data };
       setMessages(prev => [...prev, assistantMsg]);
       
-      // Update the visually hidden aria-live region with a clean, synthesized string
       const accNotes = data.accessibility_notes.length > 0 
         ? `Accessibility notes: ${data.accessibility_notes.join(', ')}.` 
         : '';
@@ -89,12 +103,9 @@ export function FanChat() {
     } catch (err: any) {
       console.error(err);
       let errorText = "Can't reach the assistant right now — check your connection and try again.";
-      
-      // If it's a 400 error we deliberately threw, surface the specific message
       if (err.status === 400) {
         errorText = err.message;
       }
-      
       const sysMsg: Message = { id: Date.now().toString(), sender: 'system', text: errorText };
       setMessages(prev => [...prev, sysMsg]);
     } finally {
@@ -102,32 +113,47 @@ export function FanChat() {
     }
   };
 
+  const handleSubmit = async (e?: FormEvent) => {
+    if (e) e.preventDefault();
+    await submitQuery(inputVal.trim());
+  };
+
   const handleVoiceTranscript = useCallback((text: string) => {
     setInputVal(prev => (prev + ' ' + text).trim());
   }, []);
 
   return (
-    <div className="chat-container">
-      {/* Visually hidden aria-live region for screen readers */}
-      <div className="sr-only" aria-live="polite" aria-atomic="true">
-        {liveAnnouncement}
-      </div>
+    <>
+      <GlobalHeader 
+        onBack={onBack} 
+        title="Stadium Assistant" 
+        rightAction={<VoiceOutputToggle readAloud={readAloud} setReadAloud={setReadAloud} />}
+      />
+      <div className="chat-container">
+        {/* Visually hidden aria-live region for screen readers */}
+        <div className="sr-only" aria-live="polite" aria-atomic="true">
+          {liveAnnouncement}
+        </div>
 
-      <div className="chat-header glass-card">
-        <div>
-          <h2 tabIndex={-1} ref={headingRef} className="chat-heading">Stadium Assistant</h2>
-          <div className="context-badges">
-            <span className="badge">Sec {fanState?.seat_section}</span>
-            <span className="badge">Kickoff: {getLiveMinutesToKickoff()}m</span>
+        <div className="chat-header glass-card">
+          <div tabIndex={-1} ref={headingRef} className="context-badges">
+            <span className="badge">📍 Sec {fanState?.seat_section}</span>
+            <span className="badge">⏱️ {getLiveMinutesToKickoff()}m to kick</span>
             {fanState?.accessibility_needs.map(n => (
               <span key={n} className="badge access">{n}</span>
             ))}
           </div>
         </div>
-        <VoiceOutputToggle readAloud={readAloud} setReadAloud={setReadAloud} />
-      </div>
 
       <div className="chat-messages">
+        {messages.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">🧭</div>
+            <p className="empty-title">Welcome to FanCompass</p>
+            <p className="empty-subtitle">Ask anything about the stadium — directions, food, accessibility, or parking.</p>
+          </div>
+        )}
+
         {messages.map(msg => (
           <div key={msg.id} className={`message-wrapper ${msg.sender}`}>
             <div className={`message-bubble ${msg.sender}`}>
@@ -143,22 +169,35 @@ export function FanChat() {
                 <div className="assistant-content">
                   <p className="answer-text">{msg.data.answer}</p>
                   
+                  {/* Route Steps Timeline */}
+                  {msg.data.route_steps.length > 0 && (
+                    <div className="route-timeline">
+                      <div className="route-title">🗺️ Route Steps</div>
+                      {msg.data.route_steps.map((step, i) => (
+                        <div key={i} className="route-step">
+                          <div className="route-step-number">{i + 1}</div>
+                          <div className="route-step-text">{step}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   <div className="structured-data">
                     <div className="data-row">
-                      <strong>Recommended Gate:</strong> 
+                      <strong>🧭 Gate:</strong> 
                       <span className="gate-badge">{msg.data.recommended_gate}</span>
                     </div>
                     
                     <div className="data-row">
                       <strong>Urgency:</strong> 
                       <span className={`urgency-badge ${msg.data.urgency_level}`}>
-                        Urgency: {msg.data.urgency_level.toUpperCase()}
+                        {URGENCY_ICONS[msg.data.urgency_level]} {msg.data.urgency_level.toUpperCase()}
                       </span>
                     </div>
 
                     {msg.data.accessibility_notes.length > 0 && (
                       <div className="accessibility-block">
-                        <strong>Accessibility Notes:</strong>
+                        <strong>♿ Accessibility Notes:</strong>
                         <ul>
                           {msg.data.accessibility_notes.map((note, i) => (
                             <li key={i}>{note}</li>
@@ -194,6 +233,22 @@ export function FanChat() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Quick Action Chips */}
+      {messages.length === 0 && !isLoading && (
+        <div className="quick-actions">
+          {QUICK_ACTIONS.map(action => (
+            <button
+              key={action.query}
+              type="button"
+              className="quick-chip"
+              onClick={() => submitQuery(action.query)}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="chat-input-area glass-card">
         <form onSubmit={handleSubmit} className="input-form">
           <input 
@@ -209,10 +264,11 @@ export function FanChat() {
             setIsListening={setIsListening}
           />
           <button type="submit" className="send-btn" disabled={!inputVal.trim() || isLoading}>
-            Send
+            ➤
           </button>
         </form>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

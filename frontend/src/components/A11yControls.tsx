@@ -2,17 +2,7 @@ import { useState, useEffect } from 'react';
 import '../styles/A11yControls.css';
 
 export function A11yControls() {
-  const [highContrast, setHighContrast] = useState(false);
-  const [fontSizeOffset, setFontSizeOffset] = useState(0); // in px
-
-  // High Contrast toggle
-  useEffect(() => {
-    if (highContrast) {
-      document.documentElement.classList.add('high-contrast');
-    } else {
-      document.documentElement.classList.remove('high-contrast');
-    }
-  }, [highContrast]);
+  const [fontSizeOffset, setFontSizeOffset] = useState(0);
 
   // Font Scaling
   useEffect(() => {
@@ -20,21 +10,12 @@ export function A11yControls() {
     document.documentElement.style.fontSize = `calc(100% + ${fontSizeOffset}px)`;
   }, [fontSizeOffset]);
 
-  const toggleHighContrast = () => setHighContrast(prev => !prev);
   const increaseFont = () => setFontSizeOffset(prev => Math.min(prev + 2, 8)); // Max +8px
   const decreaseFont = () => setFontSizeOffset(prev => Math.max(prev - 2, -4)); // Min -4px
 
   return (
     <div className="a11y-controls-bar" role="region" aria-label="Accessibility Controls">
       <div className="a11y-inner">
-        <button 
-          type="button"
-          className={`a11y-toggle-btn ${highContrast ? 'active' : ''}`}
-          onClick={toggleHighContrast}
-          aria-pressed={highContrast}
-        >
-          ◐ High Contrast
-        </button>
         <div className="font-scaling-group" role="group" aria-label="Font Scaling Controls">
           <button 
             type="button" 

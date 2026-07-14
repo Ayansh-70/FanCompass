@@ -4,22 +4,18 @@ This document outlines the accessibility strategies implemented in the FanCompas
 
 ## 1. Contrast & Color
 
-### High-Contrast Mode & WCAG Ratios (1.4.3 Contrast Minimum)
-WCAG AA requires a minimum contrast ratio of 4.5:1 for normal text. We exceed this in both our standard theme and our explicit High Contrast mode. 
+### WCAG Ratios (1.4.3 Contrast Minimum)
+WCAG AA requires a minimum contrast ratio of 4.5:1 for normal text. We exceed this in our cinematic dark theme.
 
-**Standard Theme Calculations:**
-- Background (`#0f172a`, Luminance ~0.007) vs Primary Text (`#f8fafc`, Luminance ~0.95): **~17.4:1**
-- Background (`#0f172a`, Luminance ~0.007) vs Secondary Text (`#cbd5e1`, Luminance ~0.65): **~12.2:1**
+**Cinematic Dark Theme (Phase 10) Calculations:**
+- Hero Background (`hsl(0, 0%, 8%)`, Luminance ~0.005) vs Vivid Green Text (`hsl(119, 99%, 46%)`, Luminance ~0.582): **11.49:1**
+- Core Background (`hsl(0, 0%, 10%)`, Luminance ~0.008) vs Vivid Green Text (`hsl(119, 99%, 46%)`, Luminance ~0.582): **10.89:1**
+- Vivid Green Buttons (`hsl(119, 99%, 46%)`, Luminance ~0.582) vs Primary Foreground Text (`hsl(0, 0%, 4%)`, Luminance ~0.001): **12.3:1**
 
-**High Contrast Theme Calculations:**
-- Background (`#000000`, Luminance 0) vs Primary Text (`#ffffff`, Luminance 1): **21:1**
-- Background (`#000000`, Luminance 0) vs Accent/Secondary Text (`#ffff00`, Luminance 0.927): **19.5:1**
-
-*Both themes achieve and exceed WCAG AAA standards (7:1).*
+*The theme achieves and exceeds WCAG AAA standards (7:1).*
 
 ### Color is Never the Only Signal (1.4.1 Use of Color)
 - Urgency badges (Low, Medium, High) utilize distinct background colors but always include the explicit text label (e.g., "Urgency: HIGH").
-- The High Contrast toggle explicitly changes text styling and includes `aria-pressed`.
 
 ## 2. Text Scaling (1.4.4 Resize Text)
 A global font-scaling control (`A- / A+`) is provided in the persistent top bar. It adjusts the root `font-size` on the `html` element dynamically (from `-4px` up to `+8px` of the base size). The layout utilizes `rem` units across all padding, margins, and font sizes, ensuring the entire UI scales gracefully without loss of content or functionality.
@@ -43,7 +39,7 @@ The chat interface dynamically loads new data from the assistant. Rather than fo
 
 ### Button Labels (4.1.2 Name, Role, Value)
 - Icon-only controls utilize descriptive `aria-label`s (e.g., the microphone button is `aria-label="Toggle voice input"`).
-- Toggle buttons (High Contrast, Read Aloud) utilize `aria-pressed={isActive}` to convey their active boolean state rather than just relying on visual CSS classes.
+- Toggle buttons (Read Aloud) utilize `aria-pressed={isActive}` to convey their active boolean state rather than just relying on visual CSS classes.
 
 ---
 ### Simulated Screen Reader Walkthrough (VoiceOver/NVDA)
