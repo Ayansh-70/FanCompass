@@ -33,7 +33,11 @@ export function sanitizeQuery(query: string): string {
     /you are now/i,
     /forget all instructions/i,
     /ignore all previous/i,
-    /bypass rules/i
+    /bypass rules/i,
+    /disregard/i,
+    /print your prompt/i,
+    /reveal your instructions/i,
+    /new rules:/i
   ];
 
   for (const pattern of injectionPatterns) {
@@ -43,8 +47,11 @@ export function sanitizeQuery(query: string): string {
     }
   }
 
-  // Basic sanitization
-  return query.trim();
+  // Strip basic HTML/script tags to prevent XSS if ever reflected
+  let sanitized = query.replace(/<[^>]*>?/gm, '');
+  sanitized = sanitized.replace(/javascript:/gi, '');
+
+  return sanitized.trim();
 }
 
 export function validateFanQuery(req: Request, res: Response, next: NextFunction): void {

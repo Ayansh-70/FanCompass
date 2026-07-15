@@ -26,9 +26,20 @@ describe('Staff Routes', () => {
     (orchestrateStaffQuery as jest.Mock).mockResolvedValue(mockResponse);
   });
 
+  it('should return 401 if missing auth header', async () => {
+    const res = await request(app)
+      .post('/api/staff/insight')
+      .send({
+        minutes_to_kickoff: 30,
+        context: { gate_id: 'G1', requesting_role: 'volunteer' }
+      });
+    expect(res.status).toBe(401);
+  });
+
   it('should return 400 on malformed staff context (missing gate_id)', async () => {
     const res = await request(app)
       .post('/api/staff/insight')
+      .set('Authorization', 'Bearer fancompass_staff_token')
       .send({
         minutes_to_kickoff: 30,
         context: { requesting_role: 'volunteer' }
@@ -39,6 +50,7 @@ describe('Staff Routes', () => {
   it('should return 400 on invalid gate_id', async () => {
     const res = await request(app)
       .post('/api/staff/insight')
+      .set('Authorization', 'Bearer fancompass_staff_token')
       .send({
         minutes_to_kickoff: 30,
         context: { gate_id: 'INVALID_GATE', requesting_role: 'volunteer' }
@@ -48,8 +60,14 @@ describe('Staff Routes', () => {
   });
 
   it('should return 200 with the CrowdIntelligenceResponse shape on valid request', async () => {
+    const validPayload = {
+      minutes_to_kickoff: 30,
+      context: { gate_id: 'G1', requesting_role: 'volunteer' }
+    };
+    
     const res = await request(app)
       .post('/api/staff/insight')
+      .set('Authorization', 'Bearer fancompass_staff_token')
       .send(validPayload);
       
     expect(res.status).toBe(200);

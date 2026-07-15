@@ -18,6 +18,8 @@ interface StaffDashboardProps {
 }
 
 export function StaffDashboard({ onBack }: StaffDashboardProps) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
   const { getLiveMinutesToKickoff } = useKickoffTimer();
   
   // 1. Kickoff Time State
@@ -88,7 +90,10 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
       const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
       const res = await fetch(`${API_URL}/api/staff/insight`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer fancompass_staff_token'
+        },
         body: JSON.stringify(payload)
       });
 
@@ -129,6 +134,35 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
 
   if (loadingGates) return <div className="staff-loading">Loading Stadium Data...</div>;
   if (gatesError) return <div className="staff-error glass-card">⚠️ {gatesError}</div>;
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <GlobalHeader onBack={onBack} title="Staff Login" />
+        <div className="staff-dashboard" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+          <div className="glass-card" style={{ padding: '2rem', textAlign: 'center', width: '100%', maxWidth: '400px' }}>
+            <h2>Staff Access Only</h2>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (password === 'fancompass_staff') setIsAuthenticated(true);
+              else alert('Invalid password');
+            }}>
+              <input 
+                type="password" 
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Enter staff password"
+                style={{ width: '100%', padding: '0.75rem', marginBottom: '1rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--input)', color: 'var(--foreground)' }}
+              />
+              <button type="submit" style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', background: 'var(--primary)', color: 'var(--primary-foreground)', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>
+                Login
+              </button>
+            </form>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

@@ -87,3 +87,28 @@ body {
     transform: none !important;
   }
 }
+
+ /* HIGH CONTRAST THEME */
+body.high-contrast {
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(0, 0%, 100%);
+  --primary: hsl(50, 100%, 50%); /* High contrast yellow */
+  --primary-foreground: hsl(0, 0%, 0%);
+  --secondary: hsl(0, 0%, 10%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --muted: hsl(0, 0%, 15%);
+  --muted-foreground: hsl(0, 0%, 90%);
+  --accent: hsl(50, 100%, 50%);
+  --accent-foreground: hsl(0, 0%, 0%);
+  --border: hsl(0, 0%, 100%);
+  --input: hsl(0, 0%, 10%);
+  --ring: hsl(50, 100%, 50%);
+  --hero-bg: hsl(0, 0%, 0%);
+}
+
+body.high-contrast .glass-card {
+  background: var(--secondary);
+  border: 2px solid var(--border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}

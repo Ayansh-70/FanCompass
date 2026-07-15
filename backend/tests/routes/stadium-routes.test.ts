@@ -12,11 +12,10 @@ describe('Stadium Routes', () => {
     expect(res.status).toBe(200);
     
     // Check shape
-    expect(res.body).toHaveProperty('gates');
-    expect(Array.isArray(res.body.gates)).toBe(true);
+    expect(Array.isArray(res.body)).toBe(true);
     
-    if (res.body.gates.length > 0) {
-      const gate = res.body.gates[0];
+    if (res.body.length > 0) {
+      const gate = res.body[0];
       expect(gate).toHaveProperty('id');
       expect(gate).toHaveProperty('name');
       expect(gate).toHaveProperty('wheelchair_accessible');

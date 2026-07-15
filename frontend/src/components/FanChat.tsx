@@ -136,7 +136,7 @@ export function FanChat({ onBack }: FanChatProps) {
         </div>
 
         <div className="chat-header glass-card">
-          <div tabIndex={-1} ref={headingRef} className="context-badges">
+          <div className="context-badges">
             <span className="badge">📍 Sec {fanState?.seat_section}</span>
             <span className="badge">⏱️ {getLiveMinutesToKickoff()}m to kick</span>
             {fanState?.accessibility_needs.map(n => (
@@ -145,7 +145,13 @@ export function FanChat({ onBack }: FanChatProps) {
           </div>
         </div>
 
-      <div className="chat-messages">
+      <div 
+        className="chat-messages"
+        role="region"
+        aria-label="Chat messages"
+        tabIndex={-1} 
+        ref={headingRef}
+      >
         {messages.length === 0 && (
           <div className="empty-state">
             <div className="empty-icon">🧭</div>

@@ -8,14 +8,13 @@ import { Landing } from './components/Landing';
 import './index.css';
 
 function AppContent() {
+  const { fanState, setFanState } = useFanContext();
+  const [hasStarted, setHasStarted] = useState(false);
   const path = window.location.pathname;
 
   if (path === '/staff') {
     return <StaffDashboard onBack={() => window.location.href = '/'} />;
   }
-
-  const { fanState, setFanState } = useFanContext();
-  const [hasStarted, setHasStarted] = useState(false);
 
   if (!hasStarted) {
     return <Landing onStart={() => setHasStarted(true)} />;

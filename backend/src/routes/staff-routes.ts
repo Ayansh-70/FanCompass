@@ -5,7 +5,18 @@ import { orchestrateStaffQuery } from '../services/agents/orchestrator';
 
 const router = Router();
 
-router.post('/staff/insight', validateStaffInsight, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+// Mock authentication middleware
+function authenticateStaff(req: Request, res: Response, next: NextFunction): void {
+  // In a real app, verify JWT here. We check a dummy header for demonstration.
+  const authHeader = req.headers.authorization;
+  if (!authHeader || authHeader !== 'Bearer fancompass_staff_token') {
+    res.status(401).json({ error: 'Unauthorized: Missing or invalid staff token' });
+    return;
+  }
+  next();
+}
+
+router.post('/staff/insight', authenticateStaff, validateStaffInsight, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { minutes_to_kickoff, context } = req.body;
     

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { Gate } from '../types/stadium';
 import '../styles/StadiumMap.css';
 
@@ -49,23 +49,23 @@ export function StadiumMap({ selectedSection, onSelectSection }: StadiumMapProps
     fetchGates();
   }, []);
 
-  const getGateCrowdLevel = (gateId: string): string => {
+  const getGateCrowdLevel = useCallback((gateId: string): string => {
     if (!Array.isArray(gates)) return 'low';
     const gate = gates.find(g => g && g.id === gateId);
     return gate ? gate.current_crowd_level : 'low';
-  };
+  }, [gates]);
 
-  const getSectionFill = (sectionId: string) => {
+  const getSectionFill = useCallback((sectionId: string) => {
     if (selectedSection === sectionId) return 'var(--primary)';
     if (hoveredSection === sectionId) return 'var(--muted)';
     return 'var(--secondary)';
-  };
+  }, [selectedSection, hoveredSection]);
 
-  const getSectionOpacity = (sectionId: string) => {
+  const getSectionOpacity = useCallback((sectionId: string) => {
     if (selectedSection === sectionId) return 0.9;
     if (hoveredSection === sectionId) return 0.8;
     return 0.5;
-  };
+  }, [selectedSection, hoveredSection]);
 
   return (
     <div className="stadium-map-container">

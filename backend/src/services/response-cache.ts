@@ -47,7 +47,16 @@ export function getCachedResponse(key: string): AssistantResponse | null {
   return entry.response;
 }
 
+const MAX_CACHE_SIZE = 500;
+
 export function setCachedResponse(key: string, response: AssistantResponse): void {
+  if (cache.size >= MAX_CACHE_SIZE) {
+    const oldestKey = cache.keys().next().value;
+    if (oldestKey !== undefined) {
+      cache.delete(oldestKey);
+    }
+  }
+
   cache.set(key, {
     response,
     expiresAt: Date.now() + TTL_MS
