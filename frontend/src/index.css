@@ -1,21 +1,23 @@
 :root {
-  --background: hsl(224, 30%, 9%);
-  --foreground: hsl(210, 20%, 95%);
-  --primary: hsl(210, 100%, 56%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(222, 25%, 14%);
-  --secondary-foreground: hsl(215, 15%, 75%);
-  --muted: hsl(220, 20%, 18%);
-  --muted-foreground: hsl(215, 15%, 55%);
-  --accent: hsl(210, 100%, 56%);
+  --background: hsl(230, 30%, 7%);
+  --foreground: hsl(210, 20%, 98%);
+  --primary: hsl(190, 90%, 50%); /* Bright Cyan */
+  --primary-glow: hsla(190, 90%, 50%, 0.4);
+  --primary-foreground: hsl(230, 40%, 10%);
+  --secondary: hsl(230, 25%, 12%);
+  --secondary-foreground: hsl(215, 15%, 85%);
+  --muted: hsl(230, 20%, 15%);
+  --muted-foreground: hsl(215, 15%, 65%);
+  --accent: hsl(270, 80%, 60%); /* Vibrant Purple */
+  --accent-glow: hsla(270, 80%, 60%, 0.4);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 72%, 51%);
-  --border: hsl(220, 15%, 22%);
-  --input: hsl(222, 25%, 14%);
-  --ring: hsl(210, 100%, 56%);
-  --radius: 0.625rem;
-  --nav-button: hsl(222, 25%, 16%);
-  --hero-bg: hsl(224, 35%, 7%);
+  --destructive: hsl(350, 72%, 51%);
+  --border: hsl(230, 20%, 18%);
+  --border-light: hsla(210, 20%, 98%, 0.1);
+  --input: hsl(230, 25%, 14%);
+  --ring: hsl(190, 90%, 50%);
+  --radius: 1rem; /* Softer, rounder corners */
+  --hero-bg: hsl(230, 35%, 6%);
 }
 
 body {
@@ -26,6 +28,9 @@ body {
   color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: radial-gradient(circle at 15% 50%, hsla(270, 80%, 60%, 0.05), transparent 40%),
+                    radial-gradient(circle at 85% 30%, hsla(190, 90%, 50%, 0.05), transparent 40%);
+  background-attachment: fixed;
 }
 
 * {
@@ -48,15 +53,17 @@ body {
 /* Keyboard Focus */
 *:focus-visible {
   outline: 2px solid var(--ring);
-  outline-offset: 2px;
+  outline-offset: 4px;
+  box-shadow: 0 0 12px var(--primary-glow);
 }
 
 .glass-card {
-  background: color-mix(in srgb, var(--secondary) 85%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, hsla(230, 25%, 16%, 0.6) 0%, hsla(230, 25%, 12%, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-light);
   border-radius: var(--radius);
+  box-shadow: 0 8px 32px 0 hsla(0, 0%, 0%, 0.3);
 }
 
 /* Animations */

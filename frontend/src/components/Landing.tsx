@@ -4,6 +4,13 @@ interface LandingProps {
   onStart: () => void;
 }
 
+const FEATURES = [
+  { icon: '🤖', title: 'AI-Powered Guidance', desc: 'Instant, intelligent directions powered by multi-agent AI that never gets your gate wrong.' },
+  { icon: '🌍', title: '6 Languages', desc: 'We speak your language — English, Spanish, French, German, Arabic, and Chinese.' },
+  { icon: '♿', title: 'Accessibility First', desc: 'Wheelchair, low-vision, and hearing-impaired routing built into every recommendation.' },
+  { icon: '📊', title: 'Real-Time Crowds', desc: 'Live crowd density data at every gate so you always find the fastest entry.' },
+];
+
 export function Landing({ onStart }: LandingProps) {
   return (
     <div className="landing-page">
@@ -12,7 +19,7 @@ export function Landing({ onStart }: LandingProps) {
         rightAction={
           <>
             <div className="nav-links">
-              <a href="#" className="nav-link">How It Works</a>
+              <a href="#features" className="nav-link">Features</a>
               <a href="#" className="nav-link">Accessibility</a>
               <a href="/staff" className="nav-link">For Staff</a>
             </div>
@@ -71,6 +78,44 @@ export function Landing({ onStart }: LandingProps) {
           <span className="chevron-down">⌄</span>
         </div>
       </main>
+
+      {/* ── Feature Cards Section ── */}
+      <section className="features-section" id="features">
+        <h2 className="features-heading animate-fade-up">Why FanCompass?</h2>
+        <div className="features-grid">
+          {FEATURES.map((f, i) => (
+            <div key={f.title} className={`feature-card glass-card animate-fade-up delay-${i + 1}`}>
+              <div className="feature-icon">{f.icon}</div>
+              <h3 className="feature-title">{f.title}</h3>
+              <p className="feature-desc">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Stadium Map Visual ── */}
+      <section className="stadium-visual-section">
+        <div className="stadium-visual-inner animate-fade-up">
+          <svg className="stadium-mini-map" viewBox="0 0 400 400" aria-hidden="true">
+            <ellipse cx="200" cy="200" rx="180" ry="185" fill="none" stroke="var(--border)" strokeWidth="1" opacity="0.3" />
+            <ellipse cx="200" cy="200" rx="140" ry="145" fill="none" stroke="var(--primary)" strokeWidth="0.5" opacity="0.15" />
+            <rect x="130" y="140" width="140" height="120" rx="4" fill="none" stroke="var(--primary)" strokeWidth="0.5" opacity="0.2" />
+            <ellipse cx="200" cy="200" rx="25" ry="25" fill="none" stroke="var(--primary)" strokeWidth="0.5" opacity="0.2" />
+            {/* Gate dots */}
+            <circle cx="200" cy="15" r="4" fill="var(--primary)" opacity="0.6" />
+            <circle cx="360" cy="80" r="4" fill="var(--primary)" opacity="0.6" />
+            <circle cx="380" cy="200" r="4" fill="var(--primary)" opacity="0.6" />
+            <circle cx="200" cy="385" r="4" fill="var(--primary)" opacity="0.6" />
+            <circle cx="40" cy="320" r="4" fill="var(--primary)" opacity="0.6" />
+            <circle cx="20" cy="200" r="4" fill="var(--primary)" opacity="0.6" />
+          </svg>
+          <div className="stadium-visual-text">
+            <p className="stadium-visual-label">Live stadium monitoring</p>
+            <p className="stadium-visual-sub">6 gates · Real-time crowd data · AI recommendations</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
+

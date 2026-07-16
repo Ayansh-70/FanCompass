@@ -192,11 +192,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
   font-family: inherit;
+  position: relative;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -206,22 +208,43 @@
 .btn-primary {
   background-color: var(--primary);
   color: var(--primary-foreground);
+  box-shadow: 0 4px 15px hsla(190, 90%, 50%, 0.3);
 }
 
-.btn-primary:hover { filter: brightness(1.1); }
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, hsla(0, 0%, 100%, 0.3), transparent);
+  transform: skewX(-20deg);
+  transition: all 0.5s;
+}
+
+.btn-primary:hover { 
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px hsla(190, 90%, 50%, 0.5);
+}
+
+.btn-primary:hover::after {
+  left: 150%;
+}
 
 .btn-secondary {
-  background-color: transparent;
+  background-color: hsla(230, 25%, 16%, 0.5);
   color: var(--foreground);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
 }
 
 .btn-secondary:hover {
-  background: var(--muted);
+  background: hsla(230, 25%, 16%, 0.9);
   border-color: var(--muted-foreground);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px hsla(0, 0%, 0%, 0.3);
 }
 
-.btn-primary:active, .btn-secondary:active { transform: scale(0.97); }
+.btn-primary:active, .btn-secondary:active { transform: translateY(0) scale(0.97); box-shadow: none; }
 
 .hero-trust {
   font-size: 0.8rem;
@@ -261,4 +284,105 @@
 
 @media (prefers-reduced-motion: reduce) {
   .chevron-down { animation: none; }
+}
+
+/* ── Feature Cards Section ── */
+.features-section {
+  padding: 5rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .features-section { padding: 6rem 4rem; }
+}
+
+.features-heading {
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  margin: 0 0 3rem 0;
+  color: var(--foreground);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .features-grid { grid-template-columns: 1fr; }
+}
+
+.feature-card {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px hsla(0, 0%, 0%, 0.4);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 8px hsla(0, 0%, 0%, 0.3));
+}
+
+.feature-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: var(--foreground);
+}
+
+.feature-desc {
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Stadium Map Visual ── */
+.stadium-visual-section {
+  padding: 3rem 2rem 6rem;
+  display: flex;
+  justify-content: center;
+}
+
+.stadium-visual-inner {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  max-width: 600px;
+  opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+  .stadium-visual-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.stadium-mini-map {
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.stadium-visual-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 0.3rem 0;
+}
+
+.stadium-visual-sub {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  margin: 0;
 }

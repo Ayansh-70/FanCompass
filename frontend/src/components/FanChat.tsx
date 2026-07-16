@@ -154,9 +154,18 @@ export function FanChat({ onBack }: FanChatProps) {
       >
         {messages.length === 0 && (
           <div className="empty-state">
-            <div className="empty-icon">🧭</div>
+            <div className="empty-compass" aria-hidden="true">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="var(--primary)" opacity="0.2" stroke="var(--primary)"></polygon>
+              </svg>
+            </div>
             <p className="empty-title">Welcome to FanCompass</p>
-            <p className="empty-subtitle">Ask anything about the stadium — directions, food, accessibility, or parking.</p>
+            <p className="empty-subtitle">Your AI-powered stadium companion. Ask anything about directions, food, accessibility, or parking.</p>
+            <div className="empty-tips">
+              <span className="tip-label">Try asking:</span>
+              <span className="tip-example">"What's the fastest route to my seat?"</span>
+            </div>
           </div>
         )}
 

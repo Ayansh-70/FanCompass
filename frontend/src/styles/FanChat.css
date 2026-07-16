@@ -69,19 +69,28 @@
   justify-content: center;
   flex-grow: 1;
   text-align: center;
-  padding: 2rem;
+  padding: 3rem 2rem;
   opacity: 0;
   animation: fade-in 0.5s ease-out 0.2s forwards;
 }
 
-.empty-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.empty-compass {
+  margin-bottom: 1.5rem;
+  animation: spin-slow 20s linear infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .empty-compass { animation: none; }
 }
 
 .empty-title {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.4rem;
+  font-weight: 700;
   color: var(--foreground);
   margin: 0 0 0.5rem 0;
 }
@@ -89,15 +98,43 @@
 .empty-subtitle {
   color: var(--muted-foreground);
   font-size: 0.9rem;
-  max-width: 320px;
-  line-height: 1.5;
-  margin: 0;
+  max-width: 360px;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+}
+
+.empty-tips {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.tip-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  font-weight: 600;
+}
+
+.tip-example {
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-style: italic;
+  opacity: 0.8;
 }
 
 /* Messages */
 .message-wrapper {
   display: flex;
   width: 100%;
+  animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .message-wrapper.user {
@@ -111,31 +148,33 @@
 .message-bubble {
   max-width: 80%;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 16px;
   font-size: 0.95rem;
   line-height: 1.5;
   word-wrap: break-word;
+  box-shadow: 0 4px 15px hsla(0, 0%, 0%, 0.1);
 }
 
 .message-bubble.user {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   color: var(--primary-foreground);
-  border-bottom-right-radius: 2px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 15px var(--primary-glow);
 }
 
 .message-bubble.assistant {
-  background: var(--muted);
+  background: linear-gradient(135deg, hsla(230, 25%, 16%, 0.8), hsla(230, 25%, 12%, 0.9));
   color: var(--foreground);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--primary);
-  border-bottom-left-radius: 2px;
+  border: 1px solid var(--border-light);
+  border-bottom-left-radius: 4px;
+  backdrop-filter: blur(10px);
 }
 
 .message-bubble.system {
   background: color-mix(in srgb, var(--destructive) 10%, transparent);
   color: var(--destructive);
   border: 1px solid color-mix(in srgb, var(--destructive) 30%, transparent);
-  border-bottom-left-radius: 2px;
+  border-bottom-left-radius: 4px;
 }
 
 .system-error strong {
