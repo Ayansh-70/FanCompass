@@ -107,12 +107,12 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
       }
 
       const data = await res.json();
-      const reasoning = Array.isArray(data.reasoning) ? data.reasoning : [];
-      const announcement = `Insight received for Gate ${gateId}. Action: ${data.directive}. Reasoning: ${reasoning.join(', ')}.`;
+      const directive = data.staff_directive || data.directive || 'No directive provided';
+      const announcement = `Insight received for Gate ${gateId}. Action: ${directive}.`;
 
       setInsights(prev => ({
         ...prev,
-        [gateId]: { isLoading: false, data, liveAnnouncement: announcement }
+        [gateId]: { isLoading: false, data: { directive }, liveAnnouncement: announcement }
       }));
 
     } catch (err: any) {
@@ -304,16 +304,6 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
                 {insight?.data && (
                   <div className="insight-result">
                     <p className="directive"><strong>Action Required:</strong> {insight.data.directive}</p>
-                    {Array.isArray(insight.data.reasoning) && (
-                      <details className="staff-reasoning">
-                        <summary>Reasoning Trail</summary>
-                        <ul>
-                          {insight.data.reasoning.map((step: string, i: number) => (
-                            <li key={i}>{step}</li>
-                          ))}
-                        </ul>
-                      </details>
-                    )}
                   </div>
                 )}
               </div>
