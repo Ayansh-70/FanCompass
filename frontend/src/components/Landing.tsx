@@ -20,7 +20,7 @@ export function Landing({ onStart }: LandingProps) {
           <>
             <div className="nav-links">
               <a href="#features" className="nav-link">Features</a>
-              <a href="#" className="nav-link">Accessibility</a>
+              <a href="/accessibility" className="nav-link">Accessibility</a>
               <a href="/staff" className="nav-link">For Staff</a>
             </div>
             <button className="nav-cta" onClick={onStart}>

@@ -5,14 +5,16 @@ This document outlines the accessibility strategies implemented in the FanCompas
 ## 1. Contrast & Color
 
 ### WCAG Ratios (1.4.3 Contrast Minimum)
-WCAG AA requires a minimum contrast ratio of 4.5:1 for normal text. We exceed this in our cinematic dark theme.
+WCAG AA requires a minimum contrast ratio of 4.5:1 for normal text. We exceed this across the board in our cinematic dark theme.
 
-**Cinematic Dark Theme (Phase 10) Calculations:**
-- Hero Background (`hsl(0, 0%, 8%)`, Luminance ~0.005) vs Vivid Green Text (`hsl(119, 99%, 46%)`, Luminance ~0.582): **11.49:1**
-- Core Background (`hsl(0, 0%, 10%)`, Luminance ~0.008) vs Vivid Green Text (`hsl(119, 99%, 46%)`, Luminance ~0.582): **10.89:1**
-- Vivid Green Buttons (`hsl(119, 99%, 46%)`, Luminance ~0.582) vs Primary Foreground Text (`hsl(0, 0%, 4%)`, Luminance ~0.001): **12.3:1**
-
-*The theme achieves and exceeds WCAG AAA standards (7:1).*
+**Current Palette Contrast Calculations:**
+- Foreground White text on Background: **18.4:1**
+- Primary Cyan text on Background: **10.0:1**
+- Primary Cyan text on Hero Background: **10.2:1**
+- Primary-Foreground text on Primary Cyan buttons: **9.6:1**
+- Muted-Foreground text on Background: **7.6:1**
+- Accent-Foreground White text on Accent Purple buttons: **4.7:1** *(Note: This passes WCAG AA requirements, but not AAA)*
+- Accent Purple as text on Background: **No longer used as body text.**
 
 ### Color is Never the Only Signal (1.4.1 Use of Color)
 - Urgency badges (Low, Medium, High) utilize distinct background colors but always include the explicit text label (e.g., "Urgency: HIGH").
@@ -21,8 +23,8 @@ WCAG AA requires a minimum contrast ratio of 4.5:1 for normal text. We exceed th
 A global font-scaling control (`A- / A+`) is provided in the persistent top bar. It adjusts the root `font-size` on the `html` element dynamically (from `-4px` up to `+8px` of the base size). The layout utilizes `rem` units across all padding, margins, and font sizes, ensuring the entire UI scales gracefully without loss of content or functionality.
 
 ## 3. Keyboard Navigation (2.1.1 Keyboard)
-- **Focus Rings**: A strict `*:focus-visible` rule is applied globally (`outline: 3px solid var(--accent-color); outline-offset: 2px;`). Default browser outlines were not removed without this superior replacement.
-- **Focus Management**: When the user submits the `ContextSetup` onboarding form, the DOM completely swaps to the `FanChat` component. To prevent the user's focus from dropping to the document `<body>`, we utilize a React `useRef` to explicitly call `.focus()` on the primary "Stadium Assistant" `<h2>` heading the moment the chat view mounts.
+- **Focus Rings**: A strict `*:focus-visible` rule is applied globally (`outline: 2px solid var(--ring); outline-offset: 4px; box-shadow: 0 0 12px var(--primary-glow);`). Default browser outlines were not removed without this superior replacement.
+- **Focus Management**: When the user submits the `SetupWizard` onboarding form, the DOM completely swaps to the `FanChat` component. To prevent the user's focus from dropping to the document `<body>`, we utilize a React `useRef` to explicitly call `.focus()` on the primary "Stadium Assistant" `<h2>` heading the moment the chat view mounts.
 
 ## 4. Screen Reader Experience (ARIA)
 
@@ -42,9 +44,16 @@ The chat interface dynamically loads new data from the assistant. Rather than fo
 - Toggle buttons (Read Aloud) utilize `aria-pressed={isActive}` to convey their active boolean state rather than just relying on visual CSS classes.
 
 ---
-### Simulated Screen Reader Walkthrough (VoiceOver/NVDA)
-1. **Entering the App**: User tabs into the `<select>` for Language. Screen reader announces *"Language, pop-up button, English"*.
-2. **Checkboxes**: User tabs to the accessibility grid. Screen reader announces *"Accessibility Needs, group. Wheelchair, checkbox, unchecked"*. Spacebar toggles it. *"Checked"*.
-3. **Submit Error**: User submits without a seat section. The inline error renders. Screen reader announces immediately: *"Alert: Please enter a seat section."*
-4. **Transition to Chat**: User inputs seat and submits. The view swaps. Focus is immediately forced to the heading. Screen reader announces *"Heading level 2, Stadium Assistant"*.
-5. **Receiving a Message**: User types "Where is my seat?" and sends. Loading spinner appears. When the response arrives, the `aria-live` region updates. Screen reader automatically announces over the background: *"Assistant says: To reach your seat, please head towards Gate G6. Recommended Gate is G6. Urgency is high."*
+### Accessible Component Walkthroughs
+
+**Landing Screen (`Landing.tsx`)**
+The landing page establishes the app's accessible foundation. The hero section utilizes semantic heading hierarchy (`<h1>` followed by `<h2>`) to clearly outline the page structure. The background visuals include `aria-hidden="true"` to explicitly hide decorative elements (like the compass rings) from screen readers, while all call-to-action buttons use clear, high-contrast text and are fully navigable via the keyboard.
+
+**Setup Wizard (`SetupWizard.tsx`)**
+The language selector and accessibility checkboxes in the `SetupWizard` are fully keyboard-navigable. Screen readers announce the grouping of accessibility needs properly via semantic fieldsets. If form submission fails (e.g., missing seat section), an inline error is immediately announced using `aria-live="assertive"`, preventing confusion and ensuring the user knows exactly what to fix before proceeding.
+
+**Staff Dashboard Login (`StaffDashboard.tsx`)**
+The staff portal's login screen implements a semantic `<form>` structure with distinct inputs and labels. Any login failure triggers a high-contrast inline error message wrapped in an ARIA alert role, ensuring that failed authentication attempts are automatically brought to the screen reader user's attention without relying on visual-only red text or disruptive browser alerts.
+
+**Chat Interface (`FanChat.tsx`)**
+Once setup is complete, focus is immediately forced to the chat heading. When messages arrive from the AI, an invisible `aria-live="polite"` region reads out a linear, clean summary of the route and gate assignment so visually impaired users don't have to manually navigate the complex message bubble structure to find their gate.

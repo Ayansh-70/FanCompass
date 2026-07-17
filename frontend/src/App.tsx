@@ -5,6 +5,7 @@ import { FanChat } from './components/FanChat';
 import { StaffDashboard } from './components/StaffDashboard';
 import { A11yControls } from './components/A11yControls';
 import { Landing } from './components/Landing';
+import { AccessibilityPage } from './components/AccessibilityPage';
 import './index.css';
 
 function AppContent() {
@@ -14,6 +15,10 @@ function AppContent() {
 
   if (path === '/staff') {
     return <StaffDashboard onBack={() => window.location.href = '/'} />;
+  }
+
+  if (path === '/accessibility') {
+    return <AccessibilityPage onBack={() => window.location.href = '/'} />;
   }
 
   if (!hasStarted) {
