@@ -1,5 +1,7 @@
 # FanCompass: Multilingual & Accessibility Fan Assistant
 
+**🚀 Live Deployment:** [https://fan-compass.vercel.app/](https://fan-compass.vercel.app/)
+
 FanCompass is a dual-interface application designed to enhance the stadium experience for fans while providing real-time operational intelligence to stadium staff. 
 
 ## 1. Chosen Vertical
