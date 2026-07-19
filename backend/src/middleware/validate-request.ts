@@ -72,7 +72,8 @@ export function validateFanQuery(req: Request, res: Response, next: NextFunction
     next();
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: 'Malformed Request: ' + (error.errors?.[0]?.message || 'Invalid format') });
+      const zodErr = error as z.ZodError<any>;
+      res.status(400).json({ error: 'Malformed Request: ' + (zodErr.issues?.[0]?.message || 'Invalid format') });
     } else if (error instanceof Error) {
       res.status(400).json({ error: 'Malformed Request: ' + error.message });
     } else {
@@ -98,7 +99,8 @@ export function validateStaffInsight(req: Request, res: Response, next: NextFunc
     next();
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      res.status(400).json({ error: 'Malformed Request: ' + (error.errors?.[0]?.message || 'Invalid format') });
+      const zodErr = error as z.ZodError<any>;
+      res.status(400).json({ error: 'Malformed Request: ' + (zodErr.issues?.[0]?.message || 'Invalid format') });
     } else if (error instanceof Error) {
       res.status(400).json({ error: 'Malformed Request: ' + error.message });
     } else {

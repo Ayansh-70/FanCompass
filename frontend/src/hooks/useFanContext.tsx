@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useKickoffTimer } from './useKickoffTimer';
 
-import { FanState, FanContextValue } from '../types/fan';
+import type { FanState, FanContextValue } from '../types/fan';
 
 const FanContext = createContext<FanContextValue | undefined>(undefined);
 
