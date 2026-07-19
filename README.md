@@ -11,7 +11,18 @@ We selected the **Multilingual & Accessibility Fan Assistant (with an Operationa
 - **Multilingual Assistance:** Fans can ask questions in their native language and receive localized responses, removing language barriers.
 - **Operational Intelligence:** A dedicated Staff Dashboard aggregates live crowd density and kickoff proximity, allowing volunteers and security to proactively reroute fans.
 
-## 2. Approach & Architecture
+## 2. Problem Statement Coverage
+
+- **Navigation:** Solved via a deterministic gate-recommender logic layer that calculates safe routes, overriding the LLM to guarantee correct physical navigation.
+- **Crowd Management:** Solved via predictive congestion modeling that scales urgency as kickoff approaches, paired with a Staff Dashboard that generates redirection directives for volunteers and security.
+- **Accessibility:** Solved via a robust accessibility-filtering engine that automatically removes gates with stairs/steep inclines for relevant users, alongside a WCAG-audited UI and Voice I/O for visually impaired fans.
+- **Multilingual Assistance:** Solved via localized prompts supporting 6 languages natively and a translation agent that fluidly bridges the gap between fan queries and English-based deterministic logic.
+- **Operational Intelligence:** Solved by surfacing real-time aggregated metrics (density, predictions, and urgency) to a dedicated Staff interface powered by a specialized crowd-intelligence LLM agent.
+- **Real-Time Decision Support:** Solved by continuously calculating a live urgency score based on crowd trends and time-to-kickoff, dynamically updating the messaging tone to prompt immediate fan action.
+- **Transportation:** Out of scope for this MVP. While intelligent gate routing indirectly supports external transportation flow by preventing internal bottlenecks, we do not directly integrate with external transit APIs.
+- **Sustainability:** Out of scope. We focused our resources strictly on accessibility, multilingual support, and crowd safety.
+
+## 3. Approach & Architecture
 
 ### LLM Explains, Doesn't Decide
 The core architectural principle of FanCompass is the strict separation of logic and presentation. **The LLM does not make routing or safety decisions.**
@@ -34,7 +45,7 @@ Once the decision is made, the **agent layer** acts purely as a translator and c
 [ Structured Response to Client ]
 ```
 
-## 3. Setup Instructions
+## 4. Setup Instructions
 
 ### Prerequisites
 - Node.js (v20+)
@@ -65,7 +76,7 @@ Once the decision is made, the **agent layer** acts purely as a translator and c
    npm run dev
    ```
 
-## 4. Notable Design Choices
+## 5. Notable Design Choices
 
 - **Explainable Reasoning Trails:** The LLM explicitly includes the "why" in its responses (e.g., "I'm routing you to West Gate because North Gate is congested"), establishing trust.
 - **Predictive Congestion Modeling:** The logic engine doesn't just look at current density; it increases the perceived urgency as kickoff approaches, encouraging fans to move early.
@@ -74,14 +85,14 @@ Once the decision is made, the **agent layer** acts purely as a translator and c
 - **Intelligent Response Caching:** Duplicate queries (same context, rounded kickoff time, and sorted accessibility needs) hit a cache layer, saving LLM calls and drastically reducing latency.
 - **Continuous Integration (CI):** A robust GitHub Actions pipeline type-checks the codebase and runs the isolated test suite on every PR, protecting the logic layer from regressions.
 
-## 5. Assumptions Made
+## 6. Assumptions Made
 
 - **Mock Stadium Data:** In place of live venue systems, the application uses mock stadium topology and dynamic deterministic generators.
 - **No Staff Auth:** For demo scope, the Staff Dashboard does not require authentication. In a real-world scenario, this route would be gated behind SSO/RBAC.
 - **Simulated Crowd Density:** Crowd data is generated deterministically rather than pulled from live camera/turnstile feeds.
 - **Client-side Kickoff Clock:** `minutes_to_kickoff` is derived from a user-supplied input for the hackathon context, rather than integrating with an official match-clock API.
 
-## 6. Security Considerations
+## 7. Security Considerations
 
 A comprehensive security audit (Phase 9) was performed prior to submission:
 1. **Environment Variables:** `.env` is explicitly git-ignored. No secrets were ever committed to version control.
@@ -96,7 +107,7 @@ A comprehensive security audit (Phase 9) was performed prior to submission:
 10. **CI Isolation:** The CI workflow executes completely offline via mock injection, ensuring no API keys are required or exposed in the runner.
 11. **Gitignore Integrity:** All build artifacts, logs, and OS files are excluded, with no overly broad wildcards blocking legitimate code.
 
-## 7. Testing
+## 8. Testing
 
 FanCompass relies on a strict testing regimen to guarantee safety:
 - **Deterministic Logic Tests:** Every core logic function (urgency calculation, congestion prediction, accessibility filtering) is heavily unit-tested.
