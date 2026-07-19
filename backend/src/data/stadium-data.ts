@@ -1,4 +1,6 @@
-[
+import { Gate } from '../types/stadium';
+
+export const STADIUM_GATES: Gate[] = [
   {
     "id": "G1",
     "name": "Gate 1 - North Main",
@@ -47,4 +49,4 @@
     "current_crowd_level": "low",
     "last_update_minutes_ago": 1
   }
-]
+];

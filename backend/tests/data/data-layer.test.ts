@@ -1,4 +1,4 @@
-import stadiumData from '../../src/data/stadium.json';
+import { STADIUM_GATES as stadiumData } from '../../src/data/stadium-data';
 import { generateLiveCrowdLevels } from '../../src/data/crowd-density';
 import { Gate } from '../../src/types/stadium';
 
