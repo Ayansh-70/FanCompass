@@ -10,6 +10,32 @@ import { normalizeToEnglish, translateToNative } from './translation-agent';
 import { phraseNavigationRoute } from './navigation-agent';
 import { generateStaffDirective } from './crowd-intelligence-agent';
 
+async function processInputQuery(fanQuery: string, isEnglish: boolean): Promise<string> {
+  return isEnglish ? fanQuery : await normalizeToEnglish(fanQuery);
+}
+
+async function processOutputResponse(
+  isEnglish: boolean,
+  agentResponse: { answer: string; phrased_route_steps: string[] },
+  language: string
+): Promise<{ finalAnswer: string; finalRouteSteps: string[] }> {
+  if (isEnglish) {
+    return {
+      finalAnswer: agentResponse.answer,
+      finalRouteSteps: agentResponse.phrased_route_steps,
+    };
+  }
+  const translated = await translateToNative(
+    agentResponse.answer,
+    agentResponse.phrased_route_steps,
+    language
+  );
+  return {
+    finalAnswer: translated.answer,
+    finalRouteSteps: translated.route_steps,
+  };
+}
+
 /**
  * Orchestrates a Fan Query.
  * Diagram: Fan Query -> Deterministic Logic -> Agent Phrasing -> Structured Response
@@ -20,23 +46,26 @@ export async function orchestrateFanQuery(
   stadiumData: StadiumData
 ): Promise<AssistantResponse> {
   // 1. Determines if translation is needed (translates fan query to English)
-  const isEnglish = fanContext.language.toLowerCase() === 'en' || fanContext.language.toLowerCase() === 'english';
-  const processingQuery = isEnglish ? fanQuery : await normalizeToEnglish(fanQuery);
+  const isEnglish =
+    fanContext.language.toLowerCase() === 'en' || fanContext.language.toLowerCase() === 'english';
+  const processingQuery = await processInputQuery(fanQuery, isEnglish);
 
   // 2. Invokes the deterministic logic layer
   const logicOutput = recommendGate(fanContext, stadiumData);
 
   // If logic returned no gate (e.g. edge case for accessibility)
   if (!logicOutput.recommended_gate) {
-    const finalAnswer = isEnglish ? logicOutput.answer : (await translateToNative(logicOutput.answer, [], fanContext.language)).answer;
-    
+    const finalAnswer = isEnglish
+      ? logicOutput.answer
+      : (await translateToNative(logicOutput.answer, [], fanContext.language)).answer;
+
     return {
       answer: finalAnswer,
       recommended_gate: null,
       route_steps: [],
       accessibility_notes: logicOutput.accessibility_notes,
       urgency_level: logicOutput.urgency_level,
-      reasoning_trail: logicOutput.reasoning_trail
+      reasoning_trail: logicOutput.reasoning_trail,
     };
   }
 
@@ -49,18 +78,11 @@ export async function orchestrateFanQuery(
   );
 
   // 4. TRANSLATE BACK
-  let finalAnswer = agentResponse.answer;
-  let finalRouteSteps = agentResponse.phrased_route_steps;
-
-  if (!isEnglish) {
-    const translated = await translateToNative(
-      agentResponse.answer,
-      agentResponse.phrased_route_steps,
-      fanContext.language
-    );
-    finalAnswer = translated.answer;
-    finalRouteSteps = translated.route_steps;
-  }
+  const { finalAnswer, finalRouteSteps } = await processOutputResponse(
+    isEnglish,
+    agentResponse,
+    fanContext.language
+  );
 
   // 5. STRICT ASSEMBLY
   // The LLM agent is strictly constrained and only populates answer and route_steps.
@@ -71,7 +93,7 @@ export async function orchestrateFanQuery(
     route_steps: finalRouteSteps,
     accessibility_notes: logicOutput.accessibility_notes,
     urgency_level: logicOutput.urgency_level,
-    reasoning_trail: logicOutput.reasoning_trail
+    reasoning_trail: logicOutput.reasoning_trail,
   };
 }
 
@@ -84,7 +106,7 @@ export async function orchestrateStaffQuery(
   minutesToKickoff: number
 ): Promise<CrowdIntelligenceResponse> {
   // 1. Invokes congestion logic
-  const gate = stadiumData.gates.find(g => g.id === staffContext.gate_id);
+  const gate = stadiumData.gates.find((g) => g.id === staffContext.gate_id);
   if (!gate) {
     throw new Error(`Gate ${staffContext.gate_id} not found in stadium data.`);
   }

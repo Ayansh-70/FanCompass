@@ -6,7 +6,7 @@ import { calculateUrgency } from './urgency-calculator';
 
 export function recommendGate(fanContext: FanContext, stadiumData: StadiumData): AssistantResponse {
   let reasoningTrail: string[] = [];
-  
+
   // 1. Accessibility Filter
   const filterResult = filterAccessibleRoutes(stadiumData.gates, fanContext);
   reasoningTrail = reasoningTrail.concat(filterResult.trace);
@@ -15,18 +15,20 @@ export function recommendGate(fanContext: FanContext, stadiumData: StadiumData):
   if (candidateGates.length === 0) {
     reasoningTrail.push('No gates match the requested accessibility needs.');
     return {
-      answer: 'Unfortunately, there are no gates currently matching your specific accessibility requirements.',
+      answer:
+        'Unfortunately, there are no gates currently matching your specific accessibility requirements.',
       recommended_gate: null,
       route_steps: [],
-      accessibility_notes: fanContext.accessibility_needs.length > 0 ? ['No accessible routes found'] : [],
+      accessibility_notes:
+        fanContext.accessibility_needs.length > 0 ? ['No accessible routes found'] : [],
       urgency_level: 'low',
-      reasoning_trail: reasoningTrail
+      reasoning_trail: reasoningTrail,
     };
   }
 
   // 2. Evaluate candidates for congestion and urgency
   let bestGate: Gate | null = null;
-  const levelOrder: Record<string, number> = { 'low': 1, 'medium': 2, 'high': 3 };
+  const levelOrder: Record<string, number> = { low: 1, medium: 2, high: 3 };
 
   let bestLevel = Infinity;
   let bestUrgencyRank = Infinity;
@@ -61,8 +63,8 @@ export function recommendGate(fanContext: FanContext, stadiumData: StadiumData):
       shouldReplace = true;
       reason = `Gate ${gate.id} selected over Gate ${bestGate.id}: lowest predicted congestion.`;
     } else if (levelRank === bestLevel) {
-      // Note: Intentionally kept as a tiebreaker for future-proofing. 
-      // Currently, urgency is identical if predictedLevel is identical given a shared minutes_to_kickoff, 
+      // Note: Intentionally kept as a tiebreaker for future-proofing.
+      // Currently, urgency is identical if predictedLevel is identical given a shared minutes_to_kickoff,
       // but this rule will activate if urgency logic ever incorporates a per-gate factor.
       if (urgencyRank < bestUrgencyRank) {
         shouldReplace = true;
@@ -89,6 +91,6 @@ export function recommendGate(fanContext: FanContext, stadiumData: StadiumData):
     route_steps: [`Proceed towards Gate ${bestGate!.id}`],
     accessibility_notes: fanContext.accessibility_needs,
     urgency_level: finalUrgency,
-    reasoning_trail: reasoningTrail
+    reasoning_trail: reasoningTrail,
   };
 }

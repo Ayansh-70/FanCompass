@@ -3,6 +3,6 @@ export interface AssistantResponse {
   recommended_gate: string;
   route_steps: string[];
   accessibility_notes: string[];
-  urgency_level: "low" | "medium" | "high";
+  urgency_level: 'low' | 'medium' | 'high';
   reasoning_trail: string[];
 }

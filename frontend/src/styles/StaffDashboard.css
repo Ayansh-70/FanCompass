@@ -78,7 +78,9 @@
   color: var(--foreground);
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .login-input:focus {
@@ -129,7 +131,9 @@
 }
 
 @media (max-width: 640px) {
-  .stats-bar { grid-template-columns: repeat(2, 1fr); }
+  .stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .stat-card {
@@ -151,12 +155,21 @@
 }
 
 @keyframes alert-pulse {
-  0%, 100% { box-shadow: 0 0 15px hsla(350, 72%, 51%, 0.2); border-color: var(--destructive); }
-  50% { box-shadow: 0 0 30px hsla(350, 72%, 51%, 0.6); border-color: hsl(350, 90%, 65%); }
+  0%,
+  100% {
+    box-shadow: 0 0 15px hsla(350, 72%, 51%, 0.2);
+    border-color: var(--destructive);
+  }
+  50% {
+    box-shadow: 0 0 30px hsla(350, 72%, 51%, 0.6);
+    border-color: hsl(350, 90%, 65%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stat-card.stat-alert { animation: none; }
+  .stat-card.stat-alert {
+    animation: none;
+  }
 }
 
 .stat-icon {
@@ -278,7 +291,10 @@
   background: linear-gradient(135deg, hsla(230, 25%, 16%, 0.6), hsla(230, 25%, 12%, 0.9));
   border: 1px solid var(--border-light);
   box-shadow: 0 4px 15px hsla(0, 0%, 0%, 0.2);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .gate-card:hover {
@@ -299,9 +315,18 @@
   transition: all 0.3s ease;
 }
 
-.gate-card.crowd-low::before { background: var(--primary); box-shadow: 0 0 10px var(--primary); }
-.gate-card.crowd-medium::before { background: hsl(45, 93%, 47%); box-shadow: 0 0 10px hsla(45, 93%, 47%, 0.5); }
-.gate-card.crowd-high::before { background: var(--destructive); box-shadow: 0 0 10px hsla(350, 72%, 51%, 0.5); }
+.gate-card.crowd-low::before {
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+}
+.gate-card.crowd-medium::before {
+  background: hsl(45, 93%, 47%);
+  box-shadow: 0 0 10px hsla(45, 93%, 47%, 0.5);
+}
+.gate-card.crowd-high::before {
+  background: var(--destructive);
+  box-shadow: 0 0 10px hsla(350, 72%, 51%, 0.5);
+}
 
 .gate-card-header {
   display: flex;
@@ -362,9 +387,15 @@
   align-items: center;
   gap: 0.4rem;
 }
-.crowd-badge.low { background: hsl(142, 71%, 45%); }
-.crowd-badge.medium { background: hsl(38, 92%, 50%); }
-.crowd-badge.high { background: var(--destructive); }
+.crowd-badge.low {
+  background: hsl(142, 71%, 45%);
+}
+.crowd-badge.medium {
+  background: hsl(38, 92%, 50%);
+}
+.crowd-badge.high {
+  background: var(--destructive);
+}
 
 .live-dot {
   width: 6px;
@@ -375,12 +406,21 @@
 }
 
 @keyframes live-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.5); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.5);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .live-dot { animation: none; }
+  .live-dot {
+    animation: none;
+  }
 }
 
 /* Gate Meta Row */
@@ -457,8 +497,12 @@
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* ── INSIGHT RESULTS ── */
@@ -482,8 +526,14 @@
 }
 
 @keyframes slide-in {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .directive {

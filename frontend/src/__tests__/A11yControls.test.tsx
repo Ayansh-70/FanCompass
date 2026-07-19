@@ -24,13 +24,13 @@ describe('A11yControls Component', () => {
   it('toggles high contrast class on the body', () => {
     render(<A11yControls />);
     const contrastBtn = screen.getByRole('button', { name: /toggle high contrast/i });
-    
+
     expect(document.body.classList.contains('high-contrast')).toBe(false);
-    
+
     // Turn on
     fireEvent.click(contrastBtn);
     expect(document.body.classList.contains('high-contrast')).toBe(true);
-    
+
     // Turn off
     fireEvent.click(contrastBtn);
     expect(document.body.classList.contains('high-contrast')).toBe(false);

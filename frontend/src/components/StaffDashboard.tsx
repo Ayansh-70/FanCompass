@@ -9,7 +9,7 @@ type StaffRole = 'volunteer' | 'organizer' | 'security';
 interface InsightResult {
   isLoading: boolean;
   error?: string;
-  data?: any;
+  data?: { directive: string };
   liveAnnouncement: string;
 }
 
@@ -20,7 +20,7 @@ interface StaffDashboardProps {
 const ROLE_CONFIG: Record<StaffRole, { label: string; color: string; icon: string }> = {
   volunteer: { label: 'Volunteer', color: 'hsl(190, 90%, 50%)', icon: '🤝' },
   organizer: { label: 'Organizer', color: 'hsl(270, 80%, 60%)', icon: '📋' },
-  security:  { label: 'Security',  color: 'hsl(350, 72%, 51%)', icon: '🛡️' },
+  security: { label: 'Security', color: 'hsl(350, 72%, 51%)', icon: '🛡️' },
 };
 
 export function StaffDashboard({ onBack }: StaffDashboardProps) {
@@ -28,14 +28,14 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const { getLiveMinutesToKickoff } = useKickoffTimer();
-  
+
   const [kickoffTimeStr, setKickoffTimeStr] = useState(() => {
     const d = new Date();
     d.setHours(d.getHours() + 1);
     d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
     return d.toISOString().slice(0, 16);
   });
-  
+
   const [role, setRole] = useState<StaffRole>('volunteer');
   const [gates, setGates] = useState<Gate[]>([]);
   const [loadingGates, setLoadingGates] = useState(true);
@@ -49,7 +49,7 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
         const res = await fetch(`${API_URL}/api/stadium/gates`);
         if (!res.ok) throw new Error('Failed to fetch stadium data');
         const data = await res.json();
-        const gatesArray = Array.isArray(data) ? data : (data.gates || []);
+        const gatesArray = Array.isArray(data) ? data : data.gates || [];
         const initialInsights: Record<string, InsightResult> = {};
         gatesArray.forEach((g: Gate) => {
           initialInsights[g.id] = { isLoading: false, liveAnnouncement: '' };
@@ -57,7 +57,7 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
         setGates(gatesArray);
         setInsights(initialInsights);
       } catch {
-        setGatesError("Could not load stadium gates.");
+        setGatesError('Could not load stadium gates.');
       } finally {
         setLoadingGates(false);
       }
@@ -69,36 +69,37 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
   const stats = useMemo(() => {
     const crowdMap: Record<string, number> = { low: 1, medium: 2, high: 3 };
     const total = gates.length;
-    const highCount = gates.filter(g => g.current_crowd_level === 'high').length;
-    const avgCrowd = total > 0
-      ? gates.reduce((sum, g) => sum + (crowdMap[g.current_crowd_level] || 1), 0) / total
-      : 0;
+    const highCount = gates.filter((g) => g.current_crowd_level === 'high').length;
+    const avgCrowd =
+      total > 0
+        ? gates.reduce((sum, g) => sum + (crowdMap[g.current_crowd_level] || 1), 0) / total
+        : 0;
     const avgLabel = avgCrowd < 1.5 ? 'Low' : avgCrowd < 2.5 ? 'Medium' : 'High';
-    const accessibleCount = gates.filter(g => g.wheelchair_accessible).length;
+    const accessibleCount = gates.filter((g) => g.wheelchair_accessible).length;
     return { total, highCount, avgLabel, accessibleCount };
   }, [gates]);
 
   const handleGetInsight = async (gateId: string) => {
-    setInsights(prev => ({
+    setInsights((prev) => ({
       ...prev,
-      [gateId]: { ...prev[gateId], isLoading: true, error: undefined, data: undefined }
+      [gateId]: { ...prev[gateId], isLoading: true, error: undefined, data: undefined },
     }));
 
     try {
       const minutes_to_kickoff = getLiveMinutesToKickoff(new Date(kickoffTimeStr));
       const payload = {
         minutes_to_kickoff,
-        context: { gate_id: gateId, requesting_role: role }
+        context: { gate_id: gateId, requesting_role: role },
       };
 
       const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
       const res = await fetch(`${API_URL}/api/staff/insight`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer fancompass_staff_token'
+          Authorization: 'Bearer fancompass_staff_token',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -110,18 +111,25 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
       const directive = data.staff_directive || data.directive || 'No directive provided';
       const announcement = `Insight received for Gate ${gateId}. Action: ${directive}.`;
 
-      setInsights(prev => ({
+      setInsights((prev) => ({
         ...prev,
-        [gateId]: { isLoading: false, data: { directive }, liveAnnouncement: announcement }
+        [gateId]: { isLoading: false, data: { directive }, liveAnnouncement: announcement },
       }));
-
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       let errorText = "Can't reach the backend right now — check your connection.";
-      if (err.status === 400) errorText = err.message;
-      setInsights(prev => ({
+      if (err instanceof Error) {
+        errorText = err.message;
+      } else if (err && typeof err === 'object' && 'status' in err && err.status === 400 && 'message' in err && typeof err.message === 'string') {
+        errorText = err.message;
+      }
+      setInsights((prev) => ({
         ...prev,
-        [gateId]: { isLoading: false, error: errorText, liveAnnouncement: `Error for Gate ${gateId}: ${errorText}` }
+        [gateId]: {
+          isLoading: false,
+          error: errorText,
+          liveAnnouncement: `Error for Gate ${gateId}: ${errorText}`,
+        },
       }));
     }
   };
@@ -146,16 +154,23 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
         <GlobalHeader onBack={onBack} title="Staff Portal" />
         <div className="staff-login-wrapper">
           <div className="staff-login-card glass-card animate-fade-up">
-            <div className="login-logo" aria-hidden="true">🛡️</div>
+            <div className="login-logo" aria-hidden="true">
+              🛡️
+            </div>
             <h2 className="login-title">Staff Access</h2>
-            <p className="login-subtitle">Enter your staff credentials to access the operational dashboard.</p>
-            
+            <p className="login-subtitle">
+              Enter your staff credentials to access the operational dashboard.
+            </p>
+
             <form onSubmit={handleLogin} className="login-form">
               <div className="login-input-wrapper">
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={password}
-                  onChange={e => { setPassword(e.target.value); setLoginError(''); }}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setLoginError('');
+                  }}
                   placeholder="Staff password"
                   className="login-input"
                   aria-label="Staff password"
@@ -163,7 +178,9 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
                 />
               </div>
               {loginError && (
-                <div className="login-error" role="alert">{loginError}</div>
+                <div className="login-error" role="alert">
+                  {loginError}
+                </div>
               )}
               <button type="submit" className="login-btn">
                 Unlock Dashboard
@@ -183,7 +200,6 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
     <>
       <GlobalHeader onBack={onBack} title="Operational Dashboard" />
       <div className="staff-dashboard">
-
         {/* ── Stats Summary Bar ── */}
         <div className="stats-bar">
           <div className="stat-card glass-card">
@@ -221,7 +237,11 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
           <div className="controls-left">
             <div className="form-group">
               <label htmlFor="staffRole">Role</label>
-              <select id="staffRole" value={role} onChange={(e) => setRole(e.target.value as StaffRole)}>
+              <select
+                id="staffRole"
+                value={role}
+                onChange={(e) => setRole(e.target.value as StaffRole)}
+              >
                 <option value="volunteer">Volunteer</option>
                 <option value="organizer">Organizer</option>
                 <option value="security">Security</option>
@@ -229,15 +249,18 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
             </div>
             <div className="form-group">
               <label htmlFor="staffKickoff">Match Kickoff</label>
-              <input 
-                id="staffKickoff" 
-                type="datetime-local" 
-                value={kickoffTimeStr} 
-                onChange={e => setKickoffTimeStr(e.target.value)} 
+              <input
+                id="staffKickoff"
+                type="datetime-local"
+                value={kickoffTimeStr}
+                onChange={(e) => setKickoffTimeStr(e.target.value)}
               />
             </div>
           </div>
-          <div className="role-badge" style={{ '--role-color': roleConfig.color } as React.CSSProperties}>
+          <div
+            className="role-badge"
+            style={{ '--role-color': roleConfig.color } as React.CSSProperties}
+          >
             <span className="role-badge-icon">{roleConfig.icon}</span>
             <span className="role-badge-label">{roleConfig.label}</span>
           </div>
@@ -245,10 +268,13 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
 
         {/* ── Gate Cards ── */}
         <div className="gates-list">
-          {gates.map(gate => {
+          {gates.map((gate) => {
             const insight = insights[gate.id];
             return (
-              <div key={gate.id} className={`gate-card glass-card crowd-${gate.current_crowd_level}`}>
+              <div
+                key={gate.id}
+                className={`gate-card glass-card crowd-${gate.current_crowd_level}`}
+              >
                 <div className="sr-only" aria-live="polite" aria-atomic="true">
                   {insight?.liveAnnouncement || ''}
                 </div>
@@ -265,11 +291,13 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
                         {gate.current_crowd_level.toUpperCase()}
                       </span>
                       {gate.wheelchair_accessible && (
-                        <span className="a11y-badge" title="Wheelchair Accessible">♿</span>
+                        <span className="a11y-badge" title="Wheelchair Accessible">
+                          ♿
+                        </span>
                       )}
                     </div>
                   </div>
-                  <button 
+                  <button
                     className={`insight-btn ${insight?.isLoading ? 'loading-shimmer' : ''}`}
                     onClick={() => handleGetInsight(gate.id)}
                     disabled={insight?.isLoading}
@@ -284,14 +312,20 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
                     <div className="gate-accommodations">
                       {gate.accommodations.map((acc: string) => (
                         <span key={acc} className="accommodation-tag">
-                          {acc === 'hearing_impaired_support' ? '🦻 Hearing' : 
-                           acc === 'low_vision_support' ? '👁️ Low Vision' : acc}
+                          {acc === 'hearing_impaired_support'
+                            ? '🦻 Hearing'
+                            : acc === 'low_vision_support'
+                              ? '👁️ Low Vision'
+                              : acc}
                         </span>
                       ))}
                     </div>
                   )}
                   <span className="gate-updated">
-                    Updated {gate.last_update_minutes_ago === 0 ? 'just now' : `${gate.last_update_minutes_ago}m ago`}
+                    Updated{' '}
+                    {gate.last_update_minutes_ago === 0
+                      ? 'just now'
+                      : `${gate.last_update_minutes_ago}m ago`}
                   </span>
                 </div>
 
@@ -303,7 +337,9 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
 
                 {insight?.data && (
                   <div className="insight-result">
-                    <p className="directive"><strong>Action Required:</strong> {insight.data.directive}</p>
+                    <p className="directive">
+                      <strong>Action Required:</strong> {insight.data.directive}
+                    </p>
                   </div>
                 )}
               </div>
@@ -314,4 +350,3 @@ export function StaffDashboard({ onBack }: StaffDashboardProps) {
     </>
   );
 }
-

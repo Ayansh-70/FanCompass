@@ -26,9 +26,15 @@
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--destructive) 40%, transparent); }
-  70% { box-shadow: 0 0 0 10px color-mix(in srgb, var(--destructive) 0%, transparent); }
-  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--destructive) 0%, transparent); }
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--destructive) 40%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--destructive) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--destructive) 0%, transparent);
+  }
 }
 
 .voice-toggle-btn {

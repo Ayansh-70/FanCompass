@@ -29,21 +29,22 @@ Return a JSON object with:
 
   const fallback: NavigationResponse = {
     answer: `Please head towards Gate ${recommendedGateId}.`,
-    phrased_route_steps: rawRouteSteps
+    phrased_route_steps: rawRouteSteps,
   };
 
   return await safeGenerate<NavigationResponse>(prompt, fallback, {
-    systemInstruction: "You are a friendly stadium assistant. Only phrase the provided route. Return strictly JSON. CRITICAL: You are explicitly denied permission to decide the route itself.",
+    systemInstruction:
+      'You are a friendly stadium assistant. Only phrase the provided route. Return strictly JSON. CRITICAL: You are explicitly denied permission to decide the route itself.',
     responseSchema: {
-      type: "OBJECT",
+      type: 'OBJECT',
       properties: {
-        answer: { type: "STRING" },
-        phrased_route_steps: { 
-          type: "ARRAY", 
-          items: { type: "STRING" } 
-        }
+        answer: { type: 'STRING' },
+        phrased_route_steps: {
+          type: 'ARRAY',
+          items: { type: 'STRING' },
+        },
       },
-      required: ["answer", "phrased_route_steps"]
-    }
+      required: ['answer', 'phrased_route_steps'],
+    },
   });
 }

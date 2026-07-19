@@ -58,8 +58,8 @@
   letter-spacing: 0.5px;
 }
 
-.form-group input[type="text"],
-.form-group input[type="datetime-local"],
+.form-group input[type='text'],
+.form-group input[type='datetime-local'],
 .form-group select {
   padding: 0.8rem;
   border-radius: 8px;
@@ -68,7 +68,9 @@
   color: var(--foreground);
   font-family: inherit;
   font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .form-group input:focus,
@@ -114,7 +116,9 @@
   font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
 }
 
 .primary-btn:hover {

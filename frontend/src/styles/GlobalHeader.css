@@ -8,7 +8,9 @@
   align-items: center;
   padding: 1rem 1.5rem;
   z-index: 50;
-  transition: background-color 0.3s ease, border-bottom 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    border-bottom 0.3s ease;
 }
 
 @media (min-width: 768px) {

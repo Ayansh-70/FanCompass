@@ -5,8 +5,8 @@ import '../styles/VoiceControls.css';
 // Type definitions for Web Speech API
 declare global {
   interface Window {
-    SpeechRecognition: { new(): SpeechRecognition };
-    webkitSpeechRecognition: { new(): SpeechRecognition };
+    SpeechRecognition: { new (): SpeechRecognition };
+    webkitSpeechRecognition: { new (): SpeechRecognition };
   }
 }
 
@@ -45,15 +45,14 @@ interface VoiceInputProps {
 
 export function VoiceInput({ onTranscript, isListening, setIsListening }: VoiceInputProps) {
   const { fanState } = useFanContext();
-  const [supported, setSupported] = useState(true);
+  const [supported] = useState<boolean>(() => !!(window.SpeechRecognition || window.webkitSpeechRecognition));
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      setSupported(false);
+    if (!supported) {
       return;
     }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     const recognition = new SR();
     recognition.continuous = false;
@@ -67,7 +66,7 @@ export function VoiceInput({ onTranscript, isListening, setIsListening }: VoiceI
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      console.error("Speech recognition error", event.error);
+      console.error('Speech recognition error', event.error);
       setIsListening(false);
     };
 
@@ -80,17 +79,17 @@ export function VoiceInput({ onTranscript, isListening, setIsListening }: VoiceI
     return () => {
       try {
         recognition.abort();
-      } catch (e) {
+      } catch {
         // Ignore abort errors
       }
     };
-  }, [fanState?.bcp47Locale, onTranscript, setIsListening]);
+  }, [fanState?.bcp47Locale, onTranscript, setIsListening, supported]);
 
   if (!supported) return null;
 
   const toggleListen = () => {
     if (!recognitionRef.current) return;
-    
+
     if (isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
@@ -99,13 +98,13 @@ export function VoiceInput({ onTranscript, isListening, setIsListening }: VoiceI
         recognitionRef.current.start();
         setIsListening(true);
       } catch (e) {
-        console.error("Could not start speech recognition", e);
+        console.error('Could not start speech recognition', e);
       }
     }
   };
 
   return (
-    <button 
+    <button
       type="button"
       className={`mic-btn ${isListening ? 'listening' : ''}`}
       onClick={toggleListen}
@@ -124,20 +123,14 @@ interface VoiceOutputToggleProps {
 }
 
 export function VoiceOutputToggle({ readAloud, setReadAloud }: VoiceOutputToggleProps) {
-  const [supported, setSupported] = useState(true);
-
-  useEffect(() => {
-    if (!('speechSynthesis' in window)) {
-      setSupported(false);
-    }
-  }, []);
+  const [supported] = useState<boolean>(() => 'speechSynthesis' in window);
 
   if (!supported) {
     return <div className="voice-unsupported-note">Voice output not supported by browser.</div>;
   }
 
   return (
-    <button 
+    <button
       type="button"
       className={`voice-toggle-btn ${readAloud ? 'active' : ''}`}
       onClick={() => {
@@ -156,13 +149,3 @@ export function VoiceOutputToggle({ readAloud, setReadAloud }: VoiceOutputToggle
   );
 }
 
-export function speakText(text: string, lang: string) {
-  if (!('speechSynthesis' in window)) return;
-  
-  // Cancel any ongoing speech
-  window.speechSynthesis.cancel();
-  
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  window.speechSynthesis.speak(utterance);
-}

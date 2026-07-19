@@ -5,10 +5,26 @@ interface LandingProps {
 }
 
 const FEATURES = [
-  { icon: '🤖', title: 'AI-Powered Guidance', desc: 'Instant, intelligent directions powered by multi-agent AI that never gets your gate wrong.' },
-  { icon: '🌍', title: '6 Languages', desc: 'We speak your language — English, Spanish, French, German, Arabic, and Chinese.' },
-  { icon: '♿', title: 'Accessibility First', desc: 'Wheelchair, low-vision, and hearing-impaired routing built into every recommendation.' },
-  { icon: '📊', title: 'Real-Time Crowds', desc: 'Live crowd density data at every gate so you always find the fastest entry.' },
+  {
+    icon: '🤖',
+    title: 'AI-Powered Guidance',
+    desc: 'Instant, intelligent directions powered by multi-agent AI that never gets your gate wrong.',
+  },
+  {
+    icon: '🌍',
+    title: '6 Languages',
+    desc: 'We speak your language — English, Spanish, French, German, Arabic, and Chinese.',
+  },
+  {
+    icon: '♿',
+    title: 'Accessibility First',
+    desc: 'Wheelchair, low-vision, and hearing-impaired routing built into every recommendation.',
+  },
+  {
+    icon: '📊',
+    title: 'Real-Time Crowds',
+    desc: 'Live crowd density data at every gate so you always find the fastest entry.',
+  },
 ];
 
 export function Landing({ onStart }: LandingProps) {
@@ -19,9 +35,15 @@ export function Landing({ onStart }: LandingProps) {
         rightAction={
           <>
             <div className="nav-links">
-              <a href="#features" className="nav-link">Features</a>
-              <a href="/accessibility" className="nav-link">Accessibility</a>
-              <a href="/staff" className="nav-link">For Staff</a>
+              <a href="#features" className="nav-link">
+                Features
+              </a>
+              <a href="/accessibility" className="nav-link">
+                Accessibility
+              </a>
+              <a href="/staff" className="nav-link">
+                For Staff
+              </a>
             </div>
             <button className="nav-cta" onClick={onStart}>
               Get Started
@@ -40,7 +62,7 @@ export function Landing({ onStart }: LandingProps) {
             <div className="needle-line"></div>
           </div>
         </div>
-        
+
         {/* Contrast Overlay */}
         <div className="hero-overlay"></div>
 
@@ -50,15 +72,17 @@ export function Landing({ onStart }: LandingProps) {
             <span className="fan">FAN</span>
             <span className="compass">COMPASS</span>
           </h1>
-          
+
           <h2 className="hero-subheading animate-fade-up delay-2">
             Real-time guidance, in your language, built for every fan.
           </h2>
-          
+
           <p className="hero-description animate-fade-up delay-3">
-            FanCompass gives every fan at FIFA World Cup 2026 instant, accessible directions and live crowd guidance — powered by AI, grounded in deterministic logic that never gets your gate wrong.
+            FanCompass gives every fan at FIFA World Cup 2026 instant, accessible directions and
+            live crowd guidance — powered by AI, grounded in deterministic logic that never gets
+            your gate wrong.
           </p>
-          
+
           <div className="hero-buttons animate-fade-up delay-4">
             <button className="btn-primary" onClick={onStart}>
               Find Your Gate
@@ -67,9 +91,10 @@ export function Landing({ onStart }: LandingProps) {
               Staff Dashboard
             </a>
           </div>
-          
+
           <p className="hero-trust animate-fade-up delay-5">
-            Built for FIFA World Cup 2026 &middot; 6 languages supported &middot; Wheelchair, low-vision &amp; hearing-accessible routing
+            Built for FIFA World Cup 2026 &middot; 6 languages supported &middot; Wheelchair,
+            low-vision &amp; hearing-accessible routing
           </p>
         </div>
 
@@ -97,10 +122,47 @@ export function Landing({ onStart }: LandingProps) {
       <section className="stadium-visual-section">
         <div className="stadium-visual-inner animate-fade-up">
           <svg className="stadium-mini-map" viewBox="0 0 400 400" aria-hidden="true">
-            <ellipse cx="200" cy="200" rx="180" ry="185" fill="none" stroke="var(--border)" strokeWidth="1" opacity="0.3" />
-            <ellipse cx="200" cy="200" rx="140" ry="145" fill="none" stroke="var(--primary)" strokeWidth="0.5" opacity="0.15" />
-            <rect x="130" y="140" width="140" height="120" rx="4" fill="none" stroke="var(--primary)" strokeWidth="0.5" opacity="0.2" />
-            <ellipse cx="200" cy="200" rx="25" ry="25" fill="none" stroke="var(--primary)" strokeWidth="0.5" opacity="0.2" />
+            <ellipse
+              cx="200"
+              cy="200"
+              rx="180"
+              ry="185"
+              fill="none"
+              stroke="var(--border)"
+              strokeWidth="1"
+              opacity="0.3"
+            />
+            <ellipse
+              cx="200"
+              cy="200"
+              rx="140"
+              ry="145"
+              fill="none"
+              stroke="var(--primary)"
+              strokeWidth="0.5"
+              opacity="0.15"
+            />
+            <rect
+              x="130"
+              y="140"
+              width="140"
+              height="120"
+              rx="4"
+              fill="none"
+              stroke="var(--primary)"
+              strokeWidth="0.5"
+              opacity="0.2"
+            />
+            <ellipse
+              cx="200"
+              cy="200"
+              rx="25"
+              ry="25"
+              fill="none"
+              stroke="var(--primary)"
+              strokeWidth="0.5"
+              opacity="0.2"
+            />
             {/* Gate dots */}
             <circle cx="200" cy="15" r="4" fill="var(--primary)" opacity="0.6" />
             <circle cx="360" cy="80" r="4" fill="var(--primary)" opacity="0.6" />
@@ -111,11 +173,12 @@ export function Landing({ onStart }: LandingProps) {
           </svg>
           <div className="stadium-visual-text">
             <p className="stadium-visual-label">Live stadium monitoring</p>
-            <p className="stadium-visual-sub">6 gates · Real-time crowd data · AI recommendations</p>
+            <p className="stadium-visual-sub">
+              6 gates · Real-time crowd data · AI recommendations
+            </p>
           </div>
         </div>
       </section>
     </div>
   );
 }
-

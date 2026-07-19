@@ -14,11 +14,11 @@ function AppContent() {
   const path = window.location.pathname;
 
   if (path === '/staff') {
-    return <StaffDashboard onBack={() => window.location.href = '/'} />;
+    return <StaffDashboard onBack={() => (window.location.href = '/')} />;
   }
 
   if (path === '/accessibility') {
-    return <AccessibilityPage onBack={() => window.location.href = '/'} />;
+    return <AccessibilityPage onBack={() => (window.location.href = '/')} />;
   }
 
   if (!hasStarted) {

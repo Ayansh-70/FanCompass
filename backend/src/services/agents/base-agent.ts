@@ -6,7 +6,7 @@ dotenv.config();
 const apiKey = process.env.GEMINI_API_KEY;
 
 if (!apiKey) {
-  throw new Error("GEMINI_API_KEY is missing from environment variables. Failing fast.");
+  throw new Error('GEMINI_API_KEY is missing from environment variables. Failing fast.');
 }
 
 // Instantiate the SDK
@@ -14,7 +14,7 @@ const ai = new GoogleGenAI({ apiKey });
 
 export interface SafeGenerateOptions {
   systemInstruction?: string;
-  responseSchema?: any; // We can pass a JSON schema here if we want, but standard JSON output is also okay
+  responseSchema?: Record<string, unknown>; // We can pass a JSON schema here if we want, but standard JSON output is also okay
 }
 
 /**
@@ -33,7 +33,7 @@ export async function safeGenerate<T>(
     });
 
     try {
-      const config: any = { responseMimeType: 'application/json' };
+      const config: Record<string, unknown> = { responseMimeType: 'application/json' };
       if (options?.systemInstruction) config.systemInstruction = options.systemInstruction;
       if (options?.responseSchema) config.responseSchema = options.responseSchema;
 
@@ -41,24 +41,27 @@ export async function safeGenerate<T>(
         ai.models.generateContent({
           model: 'gemini-2.5-flash',
           contents: prompt,
-          config
+          config,
         }),
-        timeoutPromise
+        timeoutPromise,
       ]);
 
       clearTimeout(timeoutId!);
 
       const text = response.text || '';
-      
+
       // Defensively parse JSON (strip code fences if any)
-      const cleanText = text.replace(/^```json/i, '').replace(/```$/i, '').trim();
-      
+      const cleanText = text
+        .replace(/^```json/i, '')
+        .replace(/```$/i, '')
+        .trim();
+
       if (!cleanText) {
-        throw new Error("Empty response from Gemini");
+        throw new Error('Empty response from Gemini');
       }
 
       return JSON.parse(cleanText) as T;
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearTimeout(timeoutId!);
       throw error;
     }
@@ -66,22 +69,27 @@ export async function safeGenerate<T>(
 
   try {
     return await executeCall();
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Retry once for transient errors (timeout or 5xx)
-    const isTransient = error.message === 'TIMEOUT' || (error.status && error.status >= 500);
-    
+    const errMessage = error instanceof Error ? error.message : '';
+    const errObj = error as { status?: number };
+    const isTransient = errMessage === 'TIMEOUT' || (errObj.status && errObj.status >= 500);
+
     if (isTransient) {
-      console.warn("[Agent Warn] Transient error in LLM call, retrying once...");
+      console.warn('[Agent Warn] Transient error in LLM call, retrying once...');
       try {
         return await executeCall();
-      } catch (retryError) {
-        console.error("[Agent Error] LLM retry failed, returning fallback.");
+      } catch {
+        console.error('[Agent Error] LLM retry failed, returning fallback.');
         return fallback;
       }
     }
-    
+
     // For non-transient errors (like JSON parse failure on the first try), fail gracefully
-    console.error("[Agent Error] Non-transient LLM error, returning fallback. Error:", error.message);
+    console.error(
+      '[Agent Error] Non-transient LLM error, returning fallback. Error:',
+      errMessage
+    );
     return fallback;
   }
 }

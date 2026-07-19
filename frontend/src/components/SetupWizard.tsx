@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { useFanContext, LOCALE_MAP } from '../hooks/useFanContext';
+import { useFanContext } from '../hooks/useFanContext';
+import { LOCALE_MAP } from '../utils/locales';
 import { StadiumMap } from './StadiumMap';
 import { GlobalHeader } from './GlobalHeader';
 import '../styles/SetupWizard.css';
@@ -42,7 +43,7 @@ export function SetupWizard({ onBack }: SetupWizardProps) {
   const [errorMsg, setErrorMsg] = useState('');
 
   const toggleA11y = (key: string) => {
-    setAccessibility(prev => ({ ...prev, [key]: !prev[key] }));
+    setAccessibility((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const countdownText = useMemo(() => {
@@ -96,114 +97,128 @@ export function SetupWizard({ onBack }: SetupWizardProps) {
       <GlobalHeader onBack={onBack} title="FanCompass Setup" />
       <div className="wizard-container">
         <div className="wizard-card glass-card">
-        {/* Progress Bar */}
-        <div className="wizard-progress" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={3} aria-label={`Step ${step} of 3: ${stepTitles[step - 1]}`}>
-          {[1, 2, 3].map((s, i) => (
-            <div className="progress-step" key={s}>
-              <div className={`step-circle ${step === s ? 'active' : ''} ${step > s ? 'completed' : ''}`}>
-                {step > s ? '✓' : s}
-              </div>
-              {i < 2 && <div className={`step-line ${step > s ? 'completed' : ''}`} />}
-            </div>
-          ))}
-        </div>
-
-        {/* Step Header */}
-        <h2 className="step-title">{stepTitles[step - 1]}</h2>
-        <p className="step-subtitle">{stepSubtitles[step - 1]}</p>
-
-        {/* Error */}
-        {errorMsg && (
-          <div role="alert" aria-live="assertive" className="wizard-error">
-            {errorMsg}
-          </div>
-        )}
-
-        {/* Step Content — key forces React to re-mount the div on step change */}
-        <div className="wizard-step-content" key={step}>
-          {step === 1 && (
-            <>
-              <div className="language-grid">
-                {LANGUAGES.map(lang => (
-                  <button
-                    key={lang.code}
-                    type="button"
-                    className={`lang-chip ${language === lang.code ? 'selected' : ''}`}
-                    onClick={() => setLanguage(lang.code)}
-                    aria-pressed={language === lang.code}
-                  >
-                    <span className="lang-flag">{lang.flag}</span>
-                    <span className="lang-name">{lang.label}</span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="a11y-section-label">Accessibility Needs</div>
-              <div className="a11y-pills">
-                {A11Y_OPTIONS.map(opt => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    className={`a11y-pill ${accessibility[opt.value] ? 'active' : ''}`}
-                    onClick={() => toggleA11y(opt.value)}
-                    aria-pressed={accessibility[opt.value]}
-                  >
-                    <span className="a11y-pill-icon">{opt.icon}</span>
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-
-          {step === 2 && (
-            <StadiumMap 
-              selectedSection={seatSection}
-              onSelectSection={(s) => { setSeatSection(s); setErrorMsg(''); }}
-            />
-          )}
-
-          {step === 3 && (
-            <>
-              <div className="kickoff-input-wrapper">
-                <label htmlFor="kickoffTime">Kickoff Time</label>
-                <input
-                  id="kickoffTime"
-                  type="datetime-local"
-                  value={kickoffTimeStr}
-                  onChange={e => setKickoffTimeStr(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="countdown-preview">
-                <span className="countdown-icon">⏱️</span>
-                <div className="countdown-text">
-                  Kickoff in <strong>{countdownText}</strong>
+          {/* Progress Bar */}
+          <div
+            className="wizard-progress"
+            role="progressbar"
+            aria-valuenow={step}
+            aria-valuemin={1}
+            aria-valuemax={3}
+            aria-label={`Step ${step} of 3: ${stepTitles[step - 1]}`}
+          >
+            {[1, 2, 3].map((s, i) => (
+              <div className="progress-step" key={s}>
+                <div
+                  className={`step-circle ${step === s ? 'active' : ''} ${step > s ? 'completed' : ''}`}
+                >
+                  {step > s ? '✓' : s}
                 </div>
+                {i < 2 && <div className={`step-line ${step > s ? 'completed' : ''}`} />}
               </div>
-            </>
-          )}
-        </div>
+            ))}
+          </div>
 
-        {/* Navigation */}
-        <div className="wizard-nav">
-          {step > 1 ? (
-            <button type="button" className="wizard-btn back" onClick={handleBack}>
-              ← Back
-            </button>
-          ) : <div />}
-          
-          {step < 3 ? (
-            <button type="button" className="wizard-btn next" onClick={handleNext}>
-              Next →
-            </button>
-          ) : (
-            <button type="button" className="wizard-btn next" onClick={handleSubmit}>
-              Start Chat 🚀
-            </button>
+          {/* Step Header */}
+          <h2 className="step-title">{stepTitles[step - 1]}</h2>
+          <p className="step-subtitle">{stepSubtitles[step - 1]}</p>
+
+          {/* Error */}
+          {errorMsg && (
+            <div role="alert" aria-live="assertive" className="wizard-error">
+              {errorMsg}
+            </div>
           )}
-        </div>
+
+          {/* Step Content — key forces React to re-mount the div on step change */}
+          <div className="wizard-step-content" key={step}>
+            {step === 1 && (
+              <>
+                <div className="language-grid">
+                  {LANGUAGES.map((lang) => (
+                    <button
+                      key={lang.code}
+                      type="button"
+                      className={`lang-chip ${language === lang.code ? 'selected' : ''}`}
+                      onClick={() => setLanguage(lang.code)}
+                      aria-pressed={language === lang.code}
+                    >
+                      <span className="lang-flag">{lang.flag}</span>
+                      <span className="lang-name">{lang.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="a11y-section-label">Accessibility Needs</div>
+                <div className="a11y-pills">
+                  {A11Y_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`a11y-pill ${accessibility[opt.value] ? 'active' : ''}`}
+                      onClick={() => toggleA11y(opt.value)}
+                      aria-pressed={accessibility[opt.value]}
+                    >
+                      <span className="a11y-pill-icon">{opt.icon}</span>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {step === 2 && (
+              <StadiumMap
+                selectedSection={seatSection}
+                onSelectSection={(s) => {
+                  setSeatSection(s);
+                  setErrorMsg('');
+                }}
+              />
+            )}
+
+            {step === 3 && (
+              <>
+                <div className="kickoff-input-wrapper">
+                  <label htmlFor="kickoffTime">Kickoff Time</label>
+                  <input
+                    id="kickoffTime"
+                    type="datetime-local"
+                    value={kickoffTimeStr}
+                    onChange={(e) => setKickoffTimeStr(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="countdown-preview">
+                  <span className="countdown-icon">⏱️</span>
+                  <div className="countdown-text">
+                    Kickoff in <strong>{countdownText}</strong>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Navigation */}
+          <div className="wizard-nav">
+            {step > 1 ? (
+              <button type="button" className="wizard-btn back" onClick={handleBack}>
+                ← Back
+              </button>
+            ) : (
+              <div />
+            )}
+
+            {step < 3 ? (
+              <button type="button" className="wizard-btn next" onClick={handleNext}>
+                Next →
+              </button>
+            ) : (
+              <button type="button" className="wizard-btn next" onClick={handleSubmit}>
+                Start Chat 🚀
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>

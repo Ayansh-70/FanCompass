@@ -6,12 +6,12 @@ export interface UrgencyResult {
 }
 
 export function calculateUrgency(
-  minutesToKickoff: number, 
-  predictedCrowdLevel: CrowdLevel, 
+  minutesToKickoff: number,
+  predictedCrowdLevel: CrowdLevel,
   trendDirection: TrendDirection
 ): UrgencyResult {
-  let urgency: Urgency = 'low';
-  let reasoning = '';
+  let urgency: Urgency;
+  let reasoning: string;
 
   if (minutesToKickoff < 15) {
     if (predictedCrowdLevel === 'high' || trendDirection === 'rising') {

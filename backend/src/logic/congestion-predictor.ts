@@ -7,14 +7,14 @@ export interface PredictorResult {
 }
 
 export function predictCongestionTrend(
-  gateId: string, 
-  currentLevel: CrowdLevel, 
-  minutesElapsedSinceLastUpdate: number, 
+  gateId: string,
+  currentLevel: CrowdLevel,
+  minutesElapsedSinceLastUpdate: number,
   minutesToKickoff: number
 ): PredictorResult {
   let trendDirection: TrendDirection = 'stable';
   let predictedLevel: CrowdLevel = currentLevel;
-  
+
   // Rule: Gates near kickoff (within 45 mins) trend towards rising. Post-kickoff trend towards falling.
   if (minutesToKickoff > 0 && minutesToKickoff <= 45) {
     trendDirection = 'rising';
@@ -34,6 +34,6 @@ export function predictCongestionTrend(
   }
 
   const trace = `Gate ${gateId}: kickoff in ${minutesToKickoff}m -> trend is ${trendDirection}. Update is ${minutesElapsedSinceLastUpdate}m old, predicted level: ${predictedLevel}`;
-  
+
   return { predictedLevel, trendDirection, trace };
 }

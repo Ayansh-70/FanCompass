@@ -55,9 +55,15 @@
   transition: all 0.3s ease;
 }
 
-.gate-dot.low { fill: hsl(142, 71%, 45%); }
-.gate-dot.medium { fill: hsl(38, 92%, 50%); }
-.gate-dot.high { fill: var(--destructive); }
+.gate-dot.low {
+  fill: hsl(142, 71%, 45%);
+}
+.gate-dot.medium {
+  fill: hsl(38, 92%, 50%);
+}
+.gate-dot.high {
+  fill: var(--destructive);
+}
 
 .gate-label {
   fill: var(--muted-foreground);
@@ -131,14 +137,25 @@
   border-radius: 50%;
 }
 
-.legend-dot.low { background: hsl(142, 71%, 45%); }
-.legend-dot.medium { background: hsl(38, 92%, 50%); }
-.legend-dot.high { background: var(--destructive); }
+.legend-dot.low {
+  background: hsl(142, 71%, 45%);
+}
+.legend-dot.medium {
+  background: hsl(38, 92%, 50%);
+}
+.legend-dot.high {
+  background: var(--destructive);
+}
 
 /* Subtle pulse on gate dots */
 @keyframes gate-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .gate-dot {
@@ -146,5 +163,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gate-dot { animation: none; }
+  .gate-dot {
+    animation: none;
+  }
 }
